@@ -2,6 +2,11 @@ import csv
 import shapefile as shp
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.io import netcdf_file
+
+kfac_scaling = False
+discharge_scaling = True
+discharge_error_scaling = False
 
 
 fig, ax = plt.subplots()
@@ -22,6 +27,40 @@ y_vals = dict()
 y_vals_list = list()
 upstream = True
 background_path = "../Animation_script/San_Guad_Imagery.tif"
+kfac_path = "../San_Gaud_data/kfac_San_Guad_1km_hour.csv"
+kfacs = list()
+max_kfacs = 0
+Qout_f_path = "../San_Gaud_data/Qout_San_Guad_exp00.nc"
+default_point_color = "b"
+
+
+i = 0
+with open(kfac_path, newline="\n") as f:
+    for row in csv.reader(f, delimiter=","):
+        print("Loading Muskingum K value", i)
+        kfacs.append(float(row[0]))
+        i += 1
+
+max_kfacs = max(kfacs)
+
+Qout_f = netcdf_file(Qout_f_path, "r")
+
+temp = Qout_f.variables["Qout"]
+Qout_data = temp[:]*1
+"""average river water discharge downstream of each river reach"""
+
+temp = Qout_f.variables["Qout_err"]
+Qout_data_err = temp[:]*1
+
+temp = Qout_f.variables["rivid"]
+"""average river water discharge uncertainty downstream of each river reach"""
+Qout_data_ids = temp[:]*1
+"""unique identifier for each river reach"""
+
+Qout_data_max = max(abs(Qout_data[0]))
+Qout_data_err_max = max(abs(Qout_data_err[0]))
+
+print("Qout_data_err:", Qout_data_err)
 
 i = 0
 with open(coords_f_path, newline="\n") as f:
@@ -32,8 +71,23 @@ with open(coords_f_path, newline="\n") as f:
         x_vals_list.append(float(row[-2].replace(" ", "")))
         y_vals_list.append(float(row[-1].replace(" ", "")))
         coords.append([float(row[-2]), float(row[-1])])
+        if kfac_scaling:
+            size = kfacs[i] / max_kfacs
+            color = default_point_color
+        elif discharge_scaling:
+            idx = np.where(Qout_data_ids == int(row[0]))
+            size = Qout_data[0][idx] / Qout_data_max
+            color = default_point_color
+        elif discharge_error_scaling:  # TODO: finish this
+            raise RuntimeError("Not yet implemented")
+            idx = np.where(Qout_data_ids == int(row[0]))
+            size = (Qout_data_err[0][idx] * 1e10) / (Qout_data_err_max * 1e10)
+            color = default_point_color
+        else:
+            size = 1
+            color = default_point_color
         p[row[0]] = plt.scatter(float(row[-2]), float(row[-1]),
-                                s=0.5, picker=5, c="b")
+                                s=size, picker=5, c=color)
         id_ind[row[0]] = i
         ind_id[i] = row[0]
         i += 1
