@@ -1,7 +1,6 @@
 import csv
 import shapefile as shp
 import matplotlib.pyplot as plt
-from math import isclose
 import numpy as np
 
 
@@ -42,15 +41,6 @@ with open(coords_f_path, newline="\n") as f:
 x_vals_array = np.array(x_vals_list)
 y_vals_array = np.array(y_vals_list)
 
-
-def records(filename):
-    # generator
-    reader = shp.Reader(filename)
-    for sr in reader.shapeRecords():
-        geom = sr.shape.__geo_interface__
-        yield geom
-
-
 with open(connectivity_f_path, newline="\n") as f:
     j = 0
     for row in csv.reader(f, delimiter=","):
@@ -60,10 +50,11 @@ with open(connectivity_f_path, newline="\n") as f:
         for d in row[1:]:
             data.append(int(d))
         connectivity[row[0].replace(" ", "")] = data
-        if row[0].replace(" ", "") in connectivity_rev:
-            connectivity_rev[row[0].replace(" ", "")] = connectivity_rev[row[0].replace(" ", "")] + data[1:]  # [row[0].replace(" ", "")]
+        k = row[0].replace(" ", "")
+        if k in connectivity_rev:
+            connectivity_rev[k] = connectivity_rev[k] + data[1:]
         else:
-            connectivity_rev[row[0].replace(" ", "")] = data[1:]
+            connectivity_rev[k] = data[1:]
         j += 1
 
 print("Reading shapefile", sf_path)
@@ -74,47 +65,25 @@ for shape in sf.shapeRecords():
     print("Drawing shape", j)
     xy = [k for k in shape.shape.points[:]]
     id = ""
-    # for c in xy:
-    #     if c in coords:
-    #         id = str(ind_id[coords.index(c)])
     x, y = zip(*[(k[0], k[1]) for k in xy])
     nearest_vals = list()
     for xj in x:
         temp_array = np.abs(x_vals_array - float(xj))
-        close = np.isclose(temp_array, np.zeros(temp_array.shape), atol=1e-13)
+        close = np.isclose(temp_array, np.zeros(temp_array.shape),
+                           atol=1e-13)
         if np.any(close):
-            # idx = np.where(close)
             idx = np.abs(temp_array).argmin()
             id = x_vals[x_vals_list[idx]]
-            print("idx:", idx)
-            print("id:", id)
-            print("xj:", xj)
-            print("x_vals_list[idx]:", x_vals_list[idx])
             break
     if id == "":
         for yj in y:
             temp_array = y_vals_array - float(yj)
-            close = np.isclose(temp_array, np.zeros(temp_array.shape), atol=1e-13)
+            close = np.isclose(temp_array, np.zeros(temp_array.shape),
+                               atol=1e-13)
             if np.any(close):
-                # idx = np.where(close)
                 idx = np.abs(temp_array).argmin()
                 id = y_vals[y_vals_list[idx]]
-                print("idx:", idx)
-                print("id:", id)
-                print("yj:", yj)
-                print("y_vals_list[idx]:", y_vals_list[idx])
                 break
-    # for xi in x_vals:
-    #     for xj in x:
-    #         if isclose(float(xi), float(xj), abs_tol=1e-13):
-    #             id = x_vals[xi]
-    #             break
-    # if id == "":
-    #     for yi in y_vals:
-    #         for yj in y:
-    #             if isclose(float(yi), float(yj), abs_tol=1e-13):
-    #                 id = y_vals[yi]
-    #                 break
     if id == "":
         continue
     elif id in rivers:
@@ -124,6 +93,9 @@ for shape in sf.shapeRecords():
 
 
 def on_pick(event):
+    """
+    Handles selection of points
+    """
     offsets = event.artist.get_offsets()[event.ind][0]
     i = 0
     for c in coords:
@@ -154,8 +126,6 @@ def on_pick(event):
                 break
             except:
                 continue
-        # for s in rivers[path]:
-        #     rivers[path][j].set_visible(False)
             j += 1
     p[str(id)].set_visible(True)
     j = 0
@@ -203,18 +173,27 @@ def on_pick(event):
 
 
 def set_downstream(event):
+    """
+    Sets the option to downstream
+    """
     global upstream
     upstream = False
     print("Set to show downstream")
 
 
 def set_upstream(event):
+    """
+    Sets the option to upstream
+    """
     global upstream
     upstream = True
     print("Set to show upstream")
 
 
 def reset(event):
+    """
+    Resets the view
+    """
     print("Resetting view")
     for path in p:
         p[path].set_visible(True)
