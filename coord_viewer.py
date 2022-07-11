@@ -7,6 +7,7 @@ from scipy.io import netcdf_file
 kfac_scaling = False
 discharge_scaling = True
 discharge_error_scaling = False
+river_length_scaling = False
 
 
 fig, ax = plt.subplots()
@@ -25,6 +26,9 @@ x_vals = dict()
 x_vals_list = list()
 y_vals = dict()
 y_vals_list = list()
+river_lengths = dict()
+river_lengths_list = list()
+river_lengths_max = 0
 upstream = True
 background_path = "../Animation_script/San_Guad_Imagery.tif"
 kfac_path = "../San_Gaud_data/kfac_San_Guad_1km_hour.csv"
@@ -60,12 +64,11 @@ Qout_data_ids = temp[:]*1
 Qout_data_max = max(abs(Qout_data[0]))
 Qout_data_err_max = max(abs(Qout_data_err[0]))
 
-print("Qout_data_err:", Qout_data_err)
-
 i = 0
 with open(coords_f_path, newline="\n") as f:
     for row in csv.reader(f, delimiter=","):
         print("Loading data point", i)
+        draw_point = True
         x_vals[float(row[-2].replace(" ", ""))] = row[0]
         y_vals[float(row[-1].replace(" ", ""))] = row[0]
         x_vals_list.append(float(row[-2].replace(" ", "")))
@@ -83,11 +86,16 @@ with open(coords_f_path, newline="\n") as f:
             idx = np.where(Qout_data_ids == int(row[0]))
             size = (Qout_data_err[0][idx] * 1e10) / (Qout_data_err_max * 1e10)
             color = default_point_color
+        elif river_length_scaling:
+            draw_point = False
+            # size = river_lengths[row[0]] / river_lengths_max
+            # color = default_point_color
         else:
             size = 1
             color = default_point_color
-        p[row[0]] = plt.scatter(float(row[-2]), float(row[-1]),
-                                s=size, picker=5, c=color)
+        if draw_point:
+            p[row[0]] = plt.scatter(float(row[-2]), float(row[-1]),
+                                    s=size, picker=5, c=color)
         id_ind[row[0]] = i
         ind_id[i] = row[0]
         i += 1
@@ -110,6 +118,7 @@ with open(connectivity_f_path, newline="\n") as f:
         else:
             connectivity_rev[k] = data[1:]
         j += 1
+
 
 print("Reading shapefile", sf_path)
 sf = shp.Reader(sf_path)
@@ -142,8 +151,36 @@ for shape in sf.shapeRecords():
         continue
     elif id in rivers:
         continue
+    i = 0
+    for k in xy[1:]:
+        d = np.sqrt((k[0] - xy[i][0]) ** 2 + (k[1] - xy[i][1]) ** 2)
+        river_lengths[id] = d
+        river_lengths_list.append(d)
+        i += 1
     rivers[id] = plt.plot(x, y, linewidth=0.5, alpha=1)
     j += 1
+
+
+river_lengths_max = max(river_lengths_list)
+if river_length_scaling:
+    i = 0
+    with open(coords_f_path, newline="\n") as f:
+        for row in csv.reader(f, delimiter=","):
+            print("Loading data point", i)
+            draw_point = True
+            x_vals[float(row[-2].replace(" ", ""))] = row[0]
+            y_vals[float(row[-1].replace(" ", ""))] = row[0]
+            x_vals_list.append(float(row[-2].replace(" ", "")))
+            y_vals_list.append(float(row[-1].replace(" ", "")))
+            coords.append([float(row[-2]), float(row[-1])])
+            if row[0] in river_lengths:
+                size = river_lengths[row[0]] / river_lengths_max
+                color = default_point_color
+                p[row[0]] = plt.scatter(float(row[-2]), float(row[-1]),
+                                        s=size, picker=5, c=color)
+            id_ind[row[0]] = i
+            ind_id[i] = row[0]
+            i += 1
 
 
 def on_pick(event):
