@@ -3,6 +3,8 @@ import shapefile as shp
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.io import netcdf_file
+import itertools
+
 
 kfac_scaling = False
 discharge_scaling = True
@@ -13,6 +15,7 @@ river_length_scaling = False
 fig, ax = plt.subplots()
 coords_f_path = "../San_Gaud_data/coords_San_Guad.csv"
 coords = list()
+coords_dict = dict()
 id_ind = dict()
 ind_id = dict()
 connectivity_f_path = "../San_Gaud_data/rapid_connect_San_Guad.csv"
@@ -36,16 +39,20 @@ kfacs = list()
 max_kfacs = 0
 Qout_f_path = "../San_Gaud_data/Qout_San_Guad_exp00.nc"
 default_point_color = "b"
+discharge_graph_rivers = dict()
+river_colors = dict()
 
+cycol = itertools.cycle("bgrcmk")
 
-i = 0
-with open(kfac_path, newline="\n") as f:
-    for row in csv.reader(f, delimiter=","):
-        print("Loading Muskingum K value", i)
-        kfacs.append(float(row[0]))
-        i += 1
+if kfac_scaling:
+    i = 0
+    with open(kfac_path, newline="\n") as f:
+        for row in csv.reader(f, delimiter=","):
+            print("Loading Muskingum K value", i)
+            kfacs.append(float(row[0]))
+            i += 1
 
-max_kfacs = max(kfacs)
+    max_kfacs = max(kfacs)
 
 Qout_f = netcdf_file(Qout_f_path, "r")
 
@@ -74,6 +81,7 @@ with open(coords_f_path, newline="\n") as f:
         x_vals_list.append(float(row[-2].replace(" ", "")))
         y_vals_list.append(float(row[-1].replace(" ", "")))
         coords.append([float(row[-2]), float(row[-1])])
+        coords_dict[row[0]] = [float(row[-2]), float(row[-1])]
         if kfac_scaling:
             size = kfacs[i] / max_kfacs
             color = default_point_color
@@ -157,7 +165,9 @@ for shape in sf.shapeRecords():
         river_lengths[id] = d
         river_lengths_list.append(d)
         i += 1
-    rivers[id] = plt.plot(x, y, linewidth=0.5, alpha=1)
+    color = next(cycol)
+    rivers[id] = plt.plot(x, y, linewidth=0.5, alpha=1, c=color)
+    river_colors[str(id)] = color
     j += 1
 
 
@@ -181,6 +191,29 @@ if river_length_scaling:
             id_ind[row[0]] = i
             ind_id[i] = row[0]
             i += 1
+
+
+Qout_graph_x_vals = list()
+Qout_graph_y_vals = list()
+fig_2 = plt.figure()
+for s in range(Qout_data.shape[1]):
+    x = list(range(Qout_data.shape[0]))
+    y = Qout_data[:, s]
+    if str(Qout_data_ids[s]) not in river_colors:
+        continue
+    id = str(Qout_data_ids[s])
+    color = river_colors[id]
+    discharge_graph_rivers[id] = plt.plot(x, y,
+                                          linewidth=0.5,
+                                          alpha=0.5,
+                                          c=color)
+plt.rcParams.update({
+    "text.usetex": True,
+})
+plt.title("River Discharge Over Time")
+plt.xlabel("Time (3 hours)")
+plt.ylabel(r"Average River Discharge ($m^3/s$)")
+fig.canvas.draw()
 
 
 def on_pick(event):
@@ -213,6 +246,16 @@ def on_pick(event):
         while True:
             try:
                 rivers[path][j].set_visible(False)
+            except IndexError:
+                break
+            except:
+                continue
+            j += 1
+    for path in discharge_graph_rivers:
+        j = 0
+        while True:
+            try:
+                discharge_graph_rivers[path][j].set_visible(False)
             except IndexError:
                 break
             except:
@@ -260,7 +303,32 @@ def on_pick(event):
             j += 1
         done_paths.append(str(curr_id))
 
+    if upstream:
+        print("Showing upstream for", id)
+        for d in connectivity[id][1:]:
+            paths.append(str(d))
+    else:
+        print("Showing downstream for", id)
+        paths.append(connectivity[id][0])
+    done_paths = list()
+    while paths:
+        curr_id = str(paths.pop())
+        if str(curr_id) not in discharge_graph_rivers:
+            continue
+        if upstream:
+            for r in connectivity[str(curr_id)][1:]:
+                paths.append(str(r))
+        else:
+            paths.append(str(connectivity[str(curr_id)][0]))
+        j = 0
+        for s in discharge_graph_rivers[str(curr_id)]:
+            if str(curr_id) in discharge_graph_rivers:
+                discharge_graph_rivers[str(curr_id)][j].set_visible(True)
+            j += 1
+        done_paths.append(str(curr_id))
+
     fig.canvas.draw()
+    fig_2.canvas.draw()
 
 
 def set_downstream(event):
@@ -293,7 +361,18 @@ def reset(event):
         for s in rivers[path]:
             rivers[path][j].set_visible(True)
             j += 1
+    for path in discharge_graph_rivers:
+        j = 0
+        while True:
+            try:
+                discharge_graph_rivers[path][j].set_visible(True)
+            except IndexError:
+                break
+            except:
+                continue
+            j += 1
     fig.canvas.draw()
+    fig_2.canvas.draw()
     print("Finished resetting view")
 
 
