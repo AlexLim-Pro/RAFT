@@ -19,7 +19,6 @@ coords_dict = dict()
 id_ind = dict()
 ind_id = dict()
 connectivity_f_path = "../San_Gaud_data/rapid_connect_San_Guad.csv"
-# sf_path = "../San_Gaud_data/catchment_Reg12/catchment_Reg12.shp"
 sf_path = "../San_Gaud_data/NHDFlowline_San_Guad/NHDFlowline_San_Guad.shp"
 connectivity = dict()
 connectivity_rev = dict()
@@ -96,8 +95,6 @@ with open(coords_f_path, newline="\n") as f:
             color = default_point_color
         elif river_length_scaling:
             draw_point = False
-            # size = river_lengths[row[0]] / river_lengths_max
-            # color = default_point_color
         else:
             size = 1
             color = default_point_color
