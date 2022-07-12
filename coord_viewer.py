@@ -287,21 +287,23 @@ def on_pick(event):
     else:
         print("Showing downstream for", id)
         paths.append(connectivity[id][0])
+    paths = done_paths
     done_paths = list()
     while paths:
-        curr_id = str(paths.pop())
-        if str(curr_id) not in rivers:
-            continue
-        if upstream:
-            for r in connectivity[str(curr_id)][1:]:
-                paths.append(str(r))
-        else:
-            paths.append(str(connectivity[str(curr_id)][0]))
-        j = 0
-        for s in rivers[str(curr_id)]:
-            rivers[str(curr_id)][j].set_visible(True)
-            j += 1
-        done_paths.append(str(curr_id))
+        try:
+            curr_id = str(paths.pop())
+            if str(curr_id) not in rivers:
+                continue
+            j = 0
+            for s in rivers[str(curr_id)]:
+                try:
+                    rivers[str(curr_id)][j].set_visible(True)
+                except:
+                    pass
+                j += 1
+            done_paths.append(str(curr_id))
+        except:
+            pass
 
     if upstream:
         print("Showing upstream for", id)
@@ -310,16 +312,12 @@ def on_pick(event):
     else:
         print("Showing downstream for", id)
         paths.append(connectivity[id][0])
+    paths = done_paths
     done_paths = list()
     while paths:
         curr_id = str(paths.pop())
         if str(curr_id) not in discharge_graph_rivers:
             continue
-        if upstream:
-            for r in connectivity[str(curr_id)][1:]:
-                paths.append(str(r))
-        else:
-            paths.append(str(connectivity[str(curr_id)][0]))
         j = 0
         for s in discharge_graph_rivers[str(curr_id)]:
             if str(curr_id) in discharge_graph_rivers:
