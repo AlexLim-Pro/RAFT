@@ -31,7 +31,6 @@ y_vals_list = list()
 river_lengths = dict()
 river_lengths_list = list()
 river_lengths_max = 0
-upstream = False
 background_path = "../Animation_script/San_Guad_Imagery.tif"
 kfac_path = "../San_Gaud_data/kfac_San_Guad_1km_hour.csv"
 kfacs = list()
@@ -238,13 +237,8 @@ def on_pick(event):
     currently_selected_river = id
     paths = list()
     done_paths = list()
-    if upstream:  # This is no longer supported
-        print("Showing upstream for", id)
-        for d in connectivity[id][1:]:
-            paths.append(str(d))
-    else:
-        print("Showing downstream for", id)
-        paths.append(connectivity[id][0])
+    print("Showing downstream for", id)
+    paths.append(connectivity[id][0])
     clear_plots()
     p[str(id)].set_visible(True)
     j = 0
@@ -257,23 +251,13 @@ def on_pick(event):
         curr_id = str(paths.pop())
         if str(curr_id) not in p:
             continue
-        if upstream:  # This is no longer supported
-            for r in connectivity[str(curr_id)][1:]:
-                paths.append(str(r))
-                downstream_rivers_list.append(str(r))
-        else:
-            paths.append(str(connectivity[str(curr_id)][0]))
-            downstream_rivers_list.append(str(connectivity[str(curr_id)][0]))
+        paths.append(str(connectivity[str(curr_id)][0]))
+        downstream_rivers_list.append(str(connectivity[str(curr_id)][0]))
         p[str(curr_id)].set_visible(True)
         done_paths.append(str(curr_id))
 
-    if upstream:  # This is no longer supported
-        print("Showing upstream for", id)
-        for d in connectivity[id][1:]:
-            paths.append(str(d))
-    else:
-        print("Showing downstream for", id)
-        paths.append(connectivity[id][0])
+    print("Showing downstream for", id)
+    paths.append(connectivity[id][0])
     paths = done_paths
     done_paths = list()
     while paths:
@@ -292,13 +276,8 @@ def on_pick(event):
         except:
             pass
 
-    if upstream:  # This is no longer supported
-        print("Showing upstream for", id)
-        for d in connectivity[id][1:]:
-            paths.append(str(d))
-    else:
-        print("Showing downstream for", id)
-        paths.append(connectivity[id][0])
+    print("Showing downstream for", id)
+    paths.append(connectivity[id][0])
     paths = done_paths
     done_paths = list()
     while paths:
@@ -312,24 +291,6 @@ def on_pick(event):
             j += 1
         done_paths.append(str(curr_id))
     redraw_canvases()
-
-
-def set_downstream(event):
-    """
-    Sets the option to downstream
-    """
-    global upstream
-    upstream = False
-    print("Set to show downstream")
-
-
-def set_upstream(event):
-    """
-    Sets the option to upstream
-    """
-    global upstream
-    upstream = True
-    print("Set to show upstream")
 
 
 def apply_multiple(event):
