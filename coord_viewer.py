@@ -418,6 +418,8 @@ def reset(event):
     """
     Resets the view
     """
+    global truncated_downstream
+    global selected_rivers_list
     print("Resetting view")
     for path in p:
         p[path].set_visible(True)
@@ -436,6 +438,8 @@ def reset(event):
             except:
                 continue
             j += 1
+    truncated_downstream = False
+    selected_rivers_list = list()
     fig.canvas.draw()
     fig_graph.canvas.draw()
     print("Finished resetting view")
