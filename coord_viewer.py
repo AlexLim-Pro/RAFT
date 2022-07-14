@@ -1,13 +1,13 @@
 import csv
 import itertools
 
-import matplotlib
-import matplotlib.widgets
-import matplotlib.pyplot as plt
 import matplotlib.backend_bases
+import matplotlib.pyplot as plt
+import matplotlib.widgets
 import numpy as np
 import shapefile as shp
 from scipy.io import netcdf_file
+
 
 kfac_scaling = False
 discharge_scaling = True
@@ -65,20 +65,13 @@ if kfac_scaling:
 
 Qout_f = netcdf_file(Qout_f_path, "r")
 
-temp = Qout_f.variables["Qout"]
-Qout_data = temp[:]*1
+Qout_data = Qout_f.variables["Qout"][:]*1
 """average river water discharge downstream of each river reach"""
 
-temp = Qout_f.variables["Qout_err"]
-Qout_data_err = temp[:]*1
-
-temp = Qout_f.variables["rivid"]
-"""average river water discharge uncertainty downstream of each river reach"""
-Qout_data_ids = temp[:]*1
+Qout_data_ids = Qout_f.variables["rivid"][:]*1
 """unique identifier for each river reach"""
 
 Qout_data_max = max(abs(Qout_data[0]))
-Qout_data_err_max = max(abs(Qout_data_err[0]))
 
 i = 0
 with open(coords_f_path, newline="\n") as f:
@@ -459,9 +452,9 @@ def isolate_evenly_spaced_one_window(rivers_list=None, *args, **kwargs):
     plt.show(block=False)
 
 
-def set_select_multiple(*args, **kwargs):
+def checkboxes_callback(*args, **kwargs):
     """
-    Toggles the select multiple rivers setting
+    Handles changes to checkboxes
 
     :param args: Unused parameter to allow function to work as a callback
     :param kwargs: Unused parameter to allow function to work as a callback
@@ -469,8 +462,7 @@ def set_select_multiple(*args, **kwargs):
     global select_multiple
     global selected_rivers_list
     global open_in_new_window
-    select_multiple_temp, open_in_new_window_temp =\
-        b_select_multiple.get_status()
+    select_multiple_temp, open_in_new_window_temp = b_checkboxes.get_status()
     if select_multiple_temp != select_multiple:
         select_multiple = select_multiple_temp
         if select_multiple:
@@ -613,32 +605,34 @@ def reset(*args, **kwargs):
     print("Finished resetting view")
 
 
+##### Config Window #####
 fig.canvas.mpl_connect("pick_event", on_pick)
 
 fig_config = plt.figure()
 
+### Reset Option ###
 ax_reset = plt.axes([0.81, 0.05, 0.1, 0.075])
 b_reset = plt.Button(ax_reset, "Reset")
 b_reset.on_clicked(reset)
 
+### Show Selected Rivers ###
 ax_apply_multiple = plt.axes([0.65, 0.05, 0.15, 0.075])
 b_apply_multiple = plt.Button(ax_apply_multiple, "Show Selected")
 b_apply_multiple.on_clicked(apply_multiple)
 
-ax_show_together = plt.axes([0.65, 0.135, 0.15, 0.075])
-b_show_together = plt.Button(ax_show_together, "Show Together")
-b_show_together.on_clicked(reset)
-
+### Show Downstream Rivers at Evenly Spaced Intervals ###
 ax_evenly_spaced = plt.axes([0.65, 0.22, 0.15, 0.075])
 b_evenly_spaced = plt.Button(ax_evenly_spaced, "Evenly Spaced")
 b_evenly_spaced.on_clicked(isolate_evenly_spaced)
 
-ax_select_multiple = plt.axes([0.34, 0.05, 0.3, 0.16])
-b_select_multiple = matplotlib.widgets.CheckButtons(
-    ax_select_multiple, labels=["Select Multiple",
-                                "Open in New Window"])
-b_select_multiple.on_clicked(set_select_multiple)
+### Checkbox Options ###
+ax_checkboxes = plt.axes([0.34, 0.05, 0.3, 0.16])
+b_checkboxes = matplotlib.widgets.CheckButtons(
+    ax_checkboxes, labels=["Select Multiple",
+                           "Open in New Window"])
+b_checkboxes.on_clicked(checkboxes_callback)
 
+### Change the Number of Downstream Rivers ###
 ax_num_downstream = plt.axes([0.2, 0.25, 0.0225, 0.63])
 num_downstream_slider = matplotlib.widgets.Slider(
     ax=ax_num_downstream,
@@ -651,7 +645,7 @@ num_downstream_slider = matplotlib.widgets.Slider(
 )
 num_downstream_slider.on_changed(update_num_downstream)
 
+
+##### Finished Preprocessing #####
 print("Finished preprocessing")
-
-
 plt.show(block=True)
