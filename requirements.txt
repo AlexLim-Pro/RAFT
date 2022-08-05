@@ -1,0 +1,5 @@
+matplotlib~=3.5.2
+numpy~=1.21.2
+progressbar~=2.5
+statsmodels~=0.13.2
+scipy~=1.8.1
