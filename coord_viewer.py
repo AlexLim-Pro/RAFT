@@ -76,16 +76,18 @@ progressbarWidgets = [
 
 
 ##### Miscellaneous Globals #####
+coords_f_path = "../San_Gaud_data/coords_San_Guad.csv"
+connectivity_f_path = "../San_Gaud_data/rapid_connect_San_Guad.csv"
+sf_path = "../San_Gaud_data/NHDFlowline_San_Guad/NHDFlowline_San_Guad.shp"
+Qout_f_path = "../San_Gaud_data/Qout_San_Guad_exp00.nc"
+
 show_errors = True
 mpl_backend_bases = matplotlib.backend_bases
 fig, ax = plt.subplots()
-coords_f_path = "../San_Gaud_data/coords_San_Guad.csv"
 coords = list()
 coords_dict = dict()
 id_ind = dict()
 ind_id = dict()
-connectivity_f_path = "../San_Gaud_data/rapid_connect_San_Guad.csv"
-sf_path = "../San_Gaud_data/NHDFlowline_San_Guad/NHDFlowline_San_Guad.shp"
 connectivity = dict()
 connectivity_rev = dict()
 p = dict()
@@ -96,7 +98,6 @@ y_vals = dict()
 y_vals_list = list()
 river_lengths = dict()
 """The length of each river in degrees"""
-Qout_f_path = "../San_Gaud_data/Qout_San_Guad_exp00.nc"
 discharge_graph_rivers = dict()
 river_colors = dict()
 num_downstream = 5
