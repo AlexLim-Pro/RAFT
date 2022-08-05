@@ -1,3 +1,12 @@
+#******************************************************************************
+#misc_functions.py
+#******************************************************************************
+
+# Purpose:
+# Miscellaneous useful functions
+# Authors:
+# Alex Christopher Lim, Cedric H. David, 2022-2022
+
 import numpy as np
 
 
