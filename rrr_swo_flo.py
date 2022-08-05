@@ -1,10 +1,11 @@
-#!python3.9 coord_viewer.py
+#!/usr/bin/env python3
 #******************************************************************************
-#coord_viewer.py
+#rrr_swo_flo.py
 #******************************************************************************
 
 # Purpose:
-# Given a river model output netCDF file, and a river network shapefile, this
+# Given a river data coordinate csv file, a river connectivity csv file,
+# a river network shapefile, and a river model output netCDF file, this
 # program creates an interactive model to better understand and communicate the
 # propagation of water through space and time within rivers.
 # Authors:
@@ -29,7 +30,7 @@ import shapefile as shp
 import statsmodels.api as sm
 from scipy.io import netcdf_file
 
-from misc_functions import DistFuncs
+from rrr_msc_fnc import DistFncs
 
 
 ##### Styling the UI #####
@@ -126,6 +127,28 @@ default_ylims = list()
 threshold_level = "1"
 sleep_time = 0.01
 
+
+##### Declaration of variables (given as command line arguments) #####
+# (1) - rrr_coords_file
+# (2) - rrr_connect_file
+# (3) - rrr_shp_file
+# (4) - rrr_Qout_file
+
+
+##### Get command line arguments #####
+IS_arg = len(sys.argv)
+if IS_arg > 5:
+    print("Error: A maximum of 4 arguments can be used.")
+    raise SystemExit(22)
+
+if IS_arg > 1:
+    coords_f_path = sys.argv[1]
+    if IS_arg > 2:
+        connectivity_f_path = sys.argv[2]
+        if IS_arg > 3:
+            sf_path = sys.argv[3]
+            if IS_arg > 4:
+                Qout_f_path = sys.argv[4]
 
 Qout_f = netcdf_file(Qout_f_path, "r")
 
@@ -246,7 +269,7 @@ for shape in sf.shapeRecords():
         continue
     i = 0
     for k in xy[1:]:
-        d = DistFuncs.great_circle_dist(k[0], xy[i][0], k[1], xy[i][1])
+        d = DistFncs.great_circle_dist(k[0], xy[i][0], k[1], xy[i][1])
         if id in river_lengths:
             river_lengths[id] += d
         else:
@@ -927,16 +950,16 @@ def get_reach_dist_deg():
     :rtype: float
     """
     if reach_dist_units == "Kilometers":
-        return DistFuncs.km2deg(reach_dist)
+        return DistFncs.km2deg(reach_dist)
     elif reach_dist_units == "Nautical Miles":
-        return DistFuncs.M2deg(reach_dist)
+        return DistFncs.M2deg(reach_dist)
     elif reach_dist_units == "Degrees":
         return reach_dist
     elif reach_dist_units == "Radians":
         return np.rad2deg(reach_dist)
     elif reach_dist_units == "Miles":
-        return DistFuncs.mi2deg(reach_dist)
-    return DistFuncs.km2deg(5)
+        return DistFncs.mi2deg(reach_dist)
+    return DistFncs.km2deg(5)
 
 def show_discharge_over_time(*args, **kwargs):
     """

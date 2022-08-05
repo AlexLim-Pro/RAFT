@@ -1,5 +1,5 @@
 #******************************************************************************
-#misc_functions.py
+#rrr_msc_fnc.py
 #******************************************************************************
 
 # Purpose:
@@ -10,7 +10,7 @@
 import numpy as np
 
 
-class DistFuncs(object):
+class DistFncs(object):
     """
     Functions that are helpful when using coordinate distances
     """
@@ -94,7 +94,7 @@ class DistFuncs(object):
         :return: The coordinate distance in nautical miles
         :rtype: float
         """
-        return DistFuncs.deg2M(np.rad2deg(dist))
+        return DistFncs.deg2M(np.rad2deg(dist))
 
     @staticmethod
     def M2deg(dist):
@@ -118,7 +118,7 @@ class DistFuncs(object):
         :return: The coordinate distance in radians
         :rtype: float
         """
-        return np.deg2rad(DistFuncs.M2deg(dist))
+        return np.deg2rad(DistFncs.M2deg(dist))
 
     @staticmethod
     def M2m(dist):
@@ -154,7 +154,7 @@ class DistFuncs(object):
         :return: The coordinate distance in kilometers
         :rtype: float
         """
-        return DistFuncs.m2km(DistFuncs.M2m(dist))
+        return DistFncs.m2km(DistFncs.M2m(dist))
 
     @staticmethod
     def km2M(dist):
@@ -166,7 +166,7 @@ class DistFuncs(object):
         :return: The coordinate distance in nautical miles
         :rtype: float
         """
-        return DistFuncs.m2M(DistFuncs.km2m(dist))
+        return DistFncs.m2M(DistFncs.km2m(dist))
 
     @staticmethod
     def deg2km(dist):
@@ -178,7 +178,7 @@ class DistFuncs(object):
         :return: The coordinate distance in kilometers
         :rtype: float
         """
-        return DistFuncs.M2km(DistFuncs.deg2M(dist))
+        return DistFncs.M2km(DistFncs.deg2M(dist))
 
     @staticmethod
     def km2deg(dist):
@@ -190,7 +190,7 @@ class DistFuncs(object):
         :return: The coordinate distance in degrees
         :rtype: float
         """
-        return DistFuncs.M2deg(DistFuncs.km2M(dist))
+        return DistFncs.M2deg(DistFncs.km2M(dist))
 
     @staticmethod
     def rad2km(dist):
@@ -202,7 +202,7 @@ class DistFuncs(object):
         :return: The coordinate distance in kilometers
         :rtype: float
         """
-        return DistFuncs.M2km(DistFuncs.rad2M(dist))
+        return DistFncs.M2km(DistFncs.rad2M(dist))
 
     @staticmethod
     def km2rad(dist):
@@ -214,7 +214,7 @@ class DistFuncs(object):
         :return: The coordinate distance in radians
         :rtype: float
         """
-        return DistFuncs.M2rad(DistFuncs.km2M(dist))
+        return DistFncs.M2rad(DistFncs.km2M(dist))
 
     @staticmethod
     def mi2km(dist):
@@ -250,7 +250,7 @@ class DistFuncs(object):
         :return: The coordinate distance in degrees
         :rtype: float
         """
-        return DistFuncs.km2deg(DistFuncs.mi2km(dist))
+        return DistFncs.km2deg(DistFncs.mi2km(dist))
 
     @staticmethod
     def deg2mi(dist):
@@ -262,4 +262,4 @@ class DistFuncs(object):
         :return: The coordinate distance in miles
         :rtype: float
         """
-        return DistFuncs.km2mi(DistFuncs.deg2km(dist))
+        return DistFncs.km2mi(DistFncs.deg2km(dist))
