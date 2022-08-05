@@ -29,10 +29,17 @@ class DistFuncs(object):
             long2 = np.deg2rad(long2)
             lat1 = np.deg2rad(lat1)
             lat2 = np.deg2rad(lat2)
-        return 2 * np.arcsin(np.sqrt(
+        # long1 *= 60
+        # long2 *= 60
+        # lat1 *= 60
+        # lat2 *= 60
+        d = 2 * np.arcsin(np.sqrt(
             (np.sin(lat1 - lat2) / 2) ** 2
             + np.cos(lat1) * np.cos(lat2) * (np.sin((long1 - long2) / 2)) ** 2
         ))
+        if not is_rad:
+            return np.rad2deg(d)
+        return d
 
     @staticmethod
     def m2km(dist):
@@ -66,7 +73,7 @@ class DistFuncs(object):
         :return: The coordinate distance in nautical miles
         :rtype: float
         """
-        return dist / 60
+        return dist * 60
 
     @staticmethod
     def rad2M(dist):
@@ -90,7 +97,7 @@ class DistFuncs(object):
         :return: The coordinate distance in degrees
         :rtype: float
         """
-        return dist * 60
+        return dist / 60
 
     @staticmethod
     def M2rad(dist):
