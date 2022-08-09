@@ -28,6 +28,10 @@ Please install the required packages in [requirements.txt](requirements.txt).
 
 Sample data can be found at [https://zenodo.org/record/3688691](https://zenodo.org/record/3688691) or [https://github.com/AlexLim-Pro/SWOF_Sample_Data.git](https://github.com/AlexLim-Pro/SWOF_Sample_Data.git).
 
+Important assets are included in [assets](assets).
+
+When running SWOF, please click on one river reach to begin data analysis.
+
 #### [rrr_swo_flo.py](rrr_swo_flo.py)
 
 Given a river data coordinate csv file, a river connectivity csv file, a river network shapefile, and a river model output netCDF file, this program creates an interactive model to better understand and communicate the propagation of water through space and time within rivers.
