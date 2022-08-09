@@ -305,6 +305,15 @@ plt.title("Please click on one river reach")
 plt.xlabel("Longitude")
 plt.ylabel("Latitude")
 
+### Quit Option ###
+ax_quit = plt.axes([0.875, 1 - 0.05 - 0.075, 0.1, 0.075])
+b_quit = plt.Button(
+    ax_quit,
+    label="Quit",
+    color=quit_bg,
+    hovercolor=quit_bg_active,
+)
+
 ### Reset Option ###
 ax_reset = plt.axes([0.875, 1 - 0.05 - 0.075 * 2 - 0.01, 0.1, 0.075])
 b_reset = plt.Button(
@@ -314,13 +323,13 @@ b_reset = plt.Button(
     hovercolor=widget_bg_active,
 )
 
-### Quit Option ###
-ax_quit = plt.axes([0.875, 1 - 0.05 - 0.075, 0.1, 0.075])
-b_quit = plt.Button(
-    ax_quit,
-    label="Quit",
-    color=quit_bg,
-    hovercolor=quit_bg_active,
+### Option to Save All ###
+ax_save = plt.axes([0.875, 1 - 0.05 - 0.075 * 3 - 0.02, 0.1, 0.075])
+b_save = plt.Button(
+    ax_save,
+    label="Save All",
+    color=g_c,
+    hovercolor=g_c_a,
 )
 
 
@@ -440,65 +449,6 @@ def on_pick(event):
     print("Took",
           (datetime.now() - start_time).total_seconds(),
           "seconds to select and draw")
-
-
-def apply_multiple(*args, **kwargs):
-    """
-    Shows the selected rivers
-    
-    :param args: Unused parameter to allow function to work as a callback
-    :param kwargs: Unused parameter to allow function to work as a callback
-    """
-    update_idle()
-    print("Drawing graphs")
-    i = 0
-    for r in selected_rivers_list:
-        fig_temp = plt.figure()
-        plt.title("River " + str(r) + " Discharge Over Time")
-        plt.xlabel("Time (3 hours)")
-        plt.ylabel(r"Average River Discharge (m^3/s)")
-        if str(r) in discharge_graph_rivers:
-            j = 0
-            for s in discharge_graph_rivers[str(r)]:
-                r_temp = discharge_graph_rivers[str(r)][j]
-                plt.plot(*r_temp.get_data(),
-                         c=r_temp.get_color(),
-                         linewidth=r_temp.get_linewidth(),
-                         alpha=r_temp.get_alpha())
-                j += 1
-        if i > max_river_selections:
-            break
-        i += 1
-
-
-def show_together(*args, **kwargs):
-    """
-    Shows the selected rivers in the same window
-
-    :param args: Unused parameter to allow function to work as a callback
-    :param kwargs: Unused parameter to allow function to work as a callback
-    """
-    print("Drawing graphs")
-    i = 0
-    for r in selected_rivers_list:
-        if str(r) in discharge_graph_rivers:
-            fig_temp = plt.figure()
-            plt.title("River " + str(r) + " Discharge Over Time")
-            plt.xlabel("Time (3 hours)")
-            plt.ylabel(r"Average River Discharge ($m^3/s$)")
-            j = 0
-            for s in discharge_graph_rivers[str(r)]:
-                r_temp = discharge_graph_rivers[str(r)][j]
-                plt.plot(*r_temp.get_data(),
-                         c=r_temp.get_color(),
-                         linewidth=r_temp.get_linewidth(),
-                         alpha=r_temp.get_alpha(),
-                         label=str(r))
-                j += 1
-            plt.legend(loc="upper right")
-        if i > max_river_selections:
-            break
-        i += 1
 
 
 def set_threshold_level(*args, **kwargs):
@@ -774,7 +724,8 @@ def show_discharge_over_time(*args, **kwargs):
         widgets=progressbarWidgets).start()
     i = 0
     fig_temp, axs = plt.subplots(nrows=num_reaches,
-                                 sharex="all", sharey="all")
+                                 sharex="all", sharey="all",
+                                 label=discharge_title)
     fig_temp.suptitle("River Discharges Over Time")
     fig_temp.supxlabel("Time (3 hours)")
     fig_temp.supylabel(r"Average River Discharge (m^3/s)")
@@ -933,6 +884,17 @@ def clear_plots(*args, **kwargs):
     shown_rivers_list = list()
 
 
+def close_all(*args, **kwargs):
+    """
+    Closes all figures and ends the program
+
+    :param args: Unused parameter to allow function to work as a callback
+    :param kwargs: Unused parameter to allow function to work as a callback
+    """
+    print("Quitting SWOF.\nSee you next time!")
+    plt.close("all")
+
+
 def reset(*args, **kwargs):
     """
     Resets the view.
@@ -978,15 +940,29 @@ def reset(*args, **kwargs):
     print("Took", (datetime.now() - start_time).total_seconds(), "to reset")
 
 
-def close_all(*args, **kwargs):
+def save_all(*args, **kwargs):
     """
-    Closes all figures and ends the program
+    Saves all figures as svgs.
 
     :param args: Unused parameter to allow function to work as a callback
     :param kwargs: Unused parameter to allow function to work as a callback
     """
-    print("Quitting SWOF.\nSee you next time!")
-    plt.close("all")
+    time.sleep(sleep_time)
+    fig_labels = plt.get_figlabels()
+    bar = progressbar.ProgressBar(
+        maxval=len(fig_labels),
+        widgets=progressbarWidgets).start()
+    i = 0
+    for l in fig_labels:
+        plt.figure(l).savefig("./saved_outputs/" + str(l) + ".svg",
+                              format="svg")
+        i += 1
+        bar.update(i)
+        sys.stdout.flush()
+    time.sleep(sleep_time)
+    bar.finish()
+    time.sleep(sleep_time)
+    print("Finished saving all figures as svgs")
 
 
 def create_config_window():
@@ -1101,7 +1077,8 @@ def create_config_window():
 
 
 ##### Config Window #####
-fig_config = plt.figure(figsize=(5.5, 2.5))
+fig_config = plt.figure(figsize=(5.5, 2.5),
+                        label="Control Room")
 fig_config.canvas.mpl_connect("pick_event", update_idle)
 fig_config.canvas.mpl_connect("button_press_event", update_idle)
 fig_config.canvas.mpl_connect("button_release_event", update_idle)
@@ -1194,11 +1171,14 @@ b_event_dur.on_clicked(show_event_duration)
 
 
 ##### River Network Window Final Processing #####
+### Allowing for Quiting the Program ###
+b_quit.on_clicked(close_all)
+
 ### Allowing for Resetting ###
 b_reset.on_clicked(reset)
 
-### Allowing for Quiting the Program ###
-b_quit.on_clicked(close_all)
+### Allowing for Saving All Figures ###
+b_save.on_clicked(save_all)
 
 ### Allowing for River Reaches to be Clicked on ###
 fig.canvas.mpl_connect("pick_event", on_pick)
