@@ -58,6 +58,10 @@ widget_bg = "#F0852D"
 widget_bg_active = "#F8B723"
 quit_bg = "#FF0000"
 quit_bg_active = "#CC0202"
+b_c = "#0492C2"
+b_c_a = "#48AAAD"
+g_c = "#018A0F"
+g_c_a = "#36A300"
 peak_duration_color = "#82EEFD"
 default_point_color = "#FFFFFF"
 cycol = itertools.cycle([
@@ -1068,8 +1072,8 @@ def create_config_window():
     b_show_discharge = plt.Button(
         ax_reach_dist,
         label="Show\nDischarge Timeseries",
-        color=widget_bg,
-        hovercolor=widget_bg_active,
+        color=b_c,
+        hovercolor=b_c_a,
     )
     b_show_discharge.on_clicked(show_discharge_over_time)
 
@@ -1078,8 +1082,8 @@ def create_config_window():
     b_propagation = plt.Button(
         ax_propagation,
         label="Show\nFlow Wave Propagation",
-        color=widget_bg,
-        hovercolor=widget_bg_active,
+        color=b_c,
+        hovercolor=b_c_a,
     )
     b_propagation.on_clicked(show_propagation)
 
@@ -1088,8 +1092,8 @@ def create_config_window():
     b_event_dur = plt.Button(
         ax_event_dur,
         label="Show\nEvent Duration",
-        color=widget_bg,
-        hovercolor=widget_bg_active,
+        color=b_c,
+        hovercolor=b_c_a,
     )
     b_event_dur.on_clicked(show_event_duration)
     fig_config.canvas.manager.set_window_title("Control Room")
