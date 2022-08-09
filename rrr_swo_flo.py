@@ -377,7 +377,7 @@ def on_pick(event):
     global offsets
     offsets_temp = event.artist.get_offsets()[event.ind][0]
     if np.any(offsets):
-        if np.all(np.isclose(offsets_temp, offsets, rtol=1e-2)):
+        if np.all(np.isclose(offsets_temp, offsets, rtol=1e-3)):
             return
     offsets = offsets_temp
     i = 0
@@ -568,11 +568,12 @@ def show_propagation(*args, **kwargs):
                         y = Qout_data[:, index]
                         corr = sm.tsa.stattools.ccf(x, y,
                                                     adjusted=False, fft=True)
-                        last_x += list(corr).index(min(corr, key=abs))
-                        plt.scatter(last_x, net_distance,
+                        last_x = list(corr).index(min(corr, key=abs))
+                        plt.scatter(last_x, DistFncs.deg2km(net_distance),
                                     s=1, alpha=1, c=color)
-                        plt.plot([x_graphs[-1], last_x],
-                                 [y_graphs[-1], net_distance],
+                        plt.plot([0, last_x],
+                                 [DistFncs.deg2km(y_graphs[-1]),
+                                  DistFncs.deg2km(net_distance)],
                                  linewidth=0.5, alpha=1, c=color)
                         x_graphs.append(last_x)
                         y_graphs.append(net_distance)
@@ -759,10 +760,12 @@ def show_discharge_over_time(*args, **kwargs):
                                 x = x_temp[list(y_temp).index(y)]
                                 if is_last_above_threshold:
                                     above_threshold_x[-1].append(x)
-                                    above_threshold_y[-1].append(y)
+                                    above_threshold_y[-1].append(
+                                        DistFncs.deg2km(y))
                                 else:
                                     above_threshold_x.append([x])
-                                    above_threshold_y.append([y])
+                                    above_threshold_y.append(
+                                        [DistFncs.deg2km(y)])
                                 is_last_above_threshold = True
                             else:
                                 is_last_above_threshold = False
@@ -906,6 +909,7 @@ def reset(*args, **kwargs):
     global selected_rivers_list
     global currently_selected_river
     global downstream_rivers_list
+    global offsets
     update_idle()
     print("Resetting view")
     start_time = datetime.now()
@@ -932,6 +936,7 @@ def reset(*args, **kwargs):
     selected_rivers_list = list()
     currently_selected_river = ""
     downstream_rivers_list = list()
+    offsets = list()
     for i in plt.get_fignums():
         if i != 1:
             plt.close(i)
@@ -1008,7 +1013,7 @@ def create_config_window():
         label="Enter number of downstream river reaches to be analyzed:",
         initial=num_reaches_str,
         textalignment="center",
-        label_pad=1.64,
+        label_pad=1.656,
         color=widget_bg,
         hovercolor=widget_bg_active,
     )
@@ -1022,7 +1027,7 @@ def create_config_window():
         label="Enter distance separating river reaches to be analyzed (km):",
         initial=reach_dist_str,
         textalignment="center",
-        label_pad=1.43,
+        label_pad=1.45,
         color=widget_bg,
         hovercolor=widget_bg_active,
     )
@@ -1036,7 +1041,7 @@ def create_config_window():
         label=r"Enter percentile for event detection in each river reach (%):",
         initial=threshold_level,
         textalignment="center",
-        label_pad=1.59,
+        label_pad=1.612,
         color=widget_bg,
         hovercolor=widget_bg_active,
     )
