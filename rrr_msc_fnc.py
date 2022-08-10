@@ -38,10 +38,6 @@ class DistFncs(object):
             long2 = np.deg2rad(long2)
             lat1 = np.deg2rad(lat1)
             lat2 = np.deg2rad(lat2)
-        # long1 *= 60
-        # long2 *= 60
-        # lat1 *= 60
-        # lat2 *= 60
         d = 2 * np.arcsin(np.sqrt(
             (np.sin(lat1 - lat2) / 2) ** 2
             + np.cos(lat1) * np.cos(lat2) * (np.sin((long1 - long2) / 2)) ** 2
