@@ -22,12 +22,16 @@ from datetime import datetime
 import matplotlib as mpl
 import matplotlib.backend_bases
 import matplotlib.font_manager as font_manager
+from matplotlib.collections import PatchCollection
 import matplotlib.pyplot as plt
 import matplotlib.style as mplstyle
 import matplotlib.widgets
 import numpy as np
 import progressbar
-import shapefile as shp
+# import shapefile as shp
+from descartes import PolygonPatch
+from shapely.geometry import Polygon, MultiPolygon, shape, MultiLineString, LineString
+import fiona
 import statsmodels.api as sm
 from scipy.io import netcdf_file
 
@@ -54,23 +58,25 @@ prop = font_manager.FontProperties(fname=font_path)
 mpl.rcParams["font.family"] = "sans-serif"
 mpl.rcParams["font.sans-serif"] = prop.get_name()
 
+grid_alpha = 0.1
 widget_bg = "#F0852D"
 widget_bg_active = "#F8B723"
-quit_bg = "#FF0000"
-quit_bg_active = "#CC0202"
+quit_bg = "#CC0202"
+quit_bg_active = "#FF0000"
 b_c = "#0492C2"
 b_c_a = "#48AAAD"
 g_c = "#018A0F"
 g_c_a = "#36A300"
 peak_duration_color = "#82EEFD"
 default_point_color = "#FFFFFF"
-cycol = itertools.cycle([
+swapping_colors = [
     "#CF0DFF",
     "#4E0CE8",
     "#0033FF",
     "#0CA2E8",
     "#00FFD0",
-])
+]
+cycol = itertools.cycle(swapping_colors)
 
 ### UI Styling ###
 progressbarWidgets = [
@@ -94,48 +100,44 @@ Qout_f_path = "../San_Gaud_data/Qout_San_Guad_exp00.nc"
 show_errors = True
 mpl_backend_bases = matplotlib.backend_bases
 fig, ax = plt.subplots(label="River Network")
+ax.grid(alpha=0.1)
 coords = list()
 coords_dict = dict()
 id_ind = dict()
 ind_id = dict()
 connectivity = dict()
-connectivity_rev = dict()
 p = dict()
 rivers = dict()
 x_vals = dict()
 x_vals_list = list()
 y_vals = dict()
 y_vals_list = list()
-river_lengths = dict()
-"""The length of each river in degrees"""
 discharge_graph_rivers = dict()
 river_colors = dict()
 num_downstream = 5
-currently_selected_river = ""
 downstream_rivers_list = list()
-truncated_downstream = False
-select_multiple = False
-selected_rivers_list = list()
 offsets = list()
 open_in_new_window = False
 skip_rerender = False
 max_river_selections = 10
 enlarged_rivers = list()
 hidden_alpha = 0.1
-point_scaling = 5
-num_reaches_str = "5"
+point_scaling = 1
+num_reaches_str = "3"
 num_reaches = int(num_reaches_str)
-reach_dist_str = "5"
+reach_dist_str = "117"
 reach_dist = float(reach_dist_str)
+default_reach_dist = reach_dist
 reach_dist_units = "km"
 have_default_view = False
 have_cleared_view = False
 shown_rivers_list = list()
 default_xlims = list()
 default_ylims = list()
-threshold_level = "1"
+threshold_level = "70"
 sleep_time = 0.01
 showing_river_discharges = False
+default_linewidth = 1
 
 
 ##### Declaration of variables (given as command line arguments) #####
@@ -168,53 +170,26 @@ Qout_data = Qout_f.variables["Qout"][:]*1
 Qout_data_normed = (Qout_data.T / abs(Qout_data).max(axis=1)).T
 """normalized average river water discharge downstream of each river reach"""
 
-# y_vals_array = Qout_f.variables["lat"][:]*1
-# """latitude of river data points"""
-#
-# x_vals_array = Qout_f.variables["lon"][:]*1
-# """longitude of river data points"""
+y_vals_array = Qout_f.variables["lat"][:]*1
+"""latitude of river data points"""
+
+x_vals_array = Qout_f.variables["lon"][:]*1
+"""longitude of river data points"""
 
 Qout_data_ids = Qout_f.variables["rivid"][:]*1
 """unique identifier for each river reach"""
 
 Qout_data_max = max(abs(Qout_data[0]))
 
-num_rows = 0
-with open(coords_f_path, newline="\n") as f:
-    num_rows += sum(1 for row in csv.reader(f, delimiter=","))
 
-i = 0
-with open(coords_f_path, newline="\n") as f:
-    print("Loading data points:")
-    time.sleep(sleep_time)
-    bar = progressbar.ProgressBar(
-        maxval=num_rows,
-        widgets=progressbarWidgets).start()
-    for row in csv.reader(f, delimiter=","):
-        x_vals[float(row[-2].replace(" ", ""))] = row[0]
-        y_vals[float(row[-1].replace(" ", ""))] = row[0]
-        x_vals_list.append(float(row[-2].replace(" ", "")))
-        y_vals_list.append(float(row[-1].replace(" ", "")))
-        coords.append([float(row[-2]), float(row[-1])])
-        coords_dict[row[0]] = [float(row[-2]), float(row[-1])]
-        idx = np.where(Qout_data_ids == int(row[0]))
-        size = Qout_data_normed[0][idx] * point_scaling
-        color = default_point_color
-        p[row[0]] = plt.scatter(float(row[-2]), float(row[-1]),
-                                s=size, picker=5, c=color)
-        id_ind[row[0]] = i
-        ind_id[i] = row[0]
-        i += 1
-        bar.update(i)
-        sys.stdout.flush()
-time.sleep(sleep_time)
-bar.finish()
-time.sleep(sleep_time)
-print("Finished loading data points")
+plt.scatter(
+    x_vals_array,
+    y_vals_array,
+    s=point_scaling,
+    picker=5,
+    color=mpl.colors.to_rgba(default_point_color, 1)
+)
 
-
-x_vals_array = np.array(x_vals_list)
-y_vals_array = np.array(y_vals_list)
 
 num_rows = 0
 with open(connectivity_f_path, newline="\n") as f:
@@ -227,16 +202,8 @@ with open(connectivity_f_path, newline="\n") as f:
                                   widgets=progressbarWidgets).start()
     j = 0
     for row in csv.reader(f, delimiter=","):
-        data = list()
-        data_rev = list()
-        for d in row[1:]:
-            data.append(int(d))
-        connectivity[row[0].replace(" ", "")] = data
-        k = row[0].replace(" ", "")
-        if k in connectivity_rev:
-            connectivity_rev[k] = connectivity_rev[k] + data[1:]
-        else:
-            connectivity_rev[k] = data[1:]
+        data = [int(d) for d in row[1:]]
+        connectivity[int(row[0].replace(" ", ""))] = data
         j += 1
         bar.update(j)
         sys.stdout.flush()
@@ -245,59 +212,15 @@ bar.finish()
 time.sleep(sleep_time)
 print("Finished loading connectivity information")
 
-
-sf = shp.Reader(sf_path)
-num_rows = len(sf.shapeRecords())
-print("Loading river morphology:")
-time.sleep(sleep_time)
-bar = progressbar.ProgressBar(
-        maxval=num_rows,
-        widgets=progressbarWidgets).start()
-j = 0
-for shape in sf.shapeRecords():
-    xy = [k for k in shape.shape.points[:]]
-    id = ""
-    x, y = zip(*[(k[0], k[1]) for k in xy])
-    nearest_vals = list()
-    for xj in x:
-        temp_array = np.abs(x_vals_array - float(xj))
-        close = np.isclose(temp_array, np.zeros(temp_array.shape),
-                           atol=1e-13)
-        if np.any(close):
-            idx = np.abs(temp_array).argmin()
-            id = x_vals[x_vals_list[idx]]
-            break
-    if id == "":
-        for yj in y:
-            temp_array = y_vals_array - float(yj)
-            close = np.isclose(temp_array, np.zeros(temp_array.shape),
-                               atol=1e-13)
-            if np.any(close):
-                idx = np.abs(temp_array).argmin()
-                id = y_vals[y_vals_list[idx]]
-                break
-    if id == "":
-        continue
-    elif id in rivers:
-        continue
-    i = 0
-    for k in xy[1:]:
-        d = DistFncs.great_circle_dist(k[0], xy[i][0], k[1], xy[i][1])
-        if id in river_lengths:
-            river_lengths[id] += d
-        else:
-            river_lengths[id] = d
-        i += 1
-    color = next(cycol)
-    rivers[id] = plt.plot(x, y, linewidth=0.5, alpha=1, c=color)
-    river_colors[str(id)] = color
-    j += 1
-    bar.update(j)
-    sys.stdout.flush()
-time.sleep(sleep_time)
-bar.finish()
-time.sleep(sleep_time)
-print("Finished loading river morphology")
+with fiona.open(sf_path) as f:
+    river_lengths = [i["properties"]["LENGTHKM"] for i in f]
+    shp_comids = [i["properties"]["COMID"] for i in f]
+    mp = MultiLineString([LineString(i["geometry"]["coordinates"]) for i in f])
+    coord_arr = [[[x for x, y, z in i["geometry"]["coordinates"]],
+                  [y for x, y, z in i["geometry"]["coordinates"]]] for i in f]
+    [plt.plot(xi, yi,
+              color=b_c,
+              linewidth=default_linewidth) for xi, yi in coord_arr]
 
 
 ##### River Network Window #####
@@ -327,40 +250,53 @@ b_reset = plt.Button(
 ax_save = plt.axes([0.875, 1 - 0.05 - 0.075 * 3 - 0.02, 0.1, 0.075])
 b_save = plt.Button(
     ax_save,
-    label="Save All",
+    label="Save\nFigures",
     color=g_c,
     hovercolor=g_c_a,
 )
 
 
-print("Loading river discharge data:")
-time.sleep(sleep_time)
-bar = progressbar.ProgressBar(
-        maxval=Qout_data.shape[1],
-        widgets=progressbarWidgets).start()
-fig_graph, ax_graph = plt.subplots(label="fig_graph")
-for s in range(Qout_data.shape[1]):
-    x = list(range(Qout_data.shape[0]))
-    y = Qout_data[:, s]
-    if str(Qout_data_ids[s]) not in river_colors:
-        continue
-    id = str(Qout_data_ids[s])
-    color = river_colors[id]
-    discharge_graph_rivers[id] = plt.plot(x, y,
-                                          linewidth=0.5,
-                                          alpha=0.5,
-                                          c=color)
-    bar.update(s)
-    sys.stdout.flush()
-time.sleep(sleep_time)
-bar.finish()
-time.sleep(sleep_time)
-print("Finished loading river discharge data")
+def get_rivids_along_downstream(num_rivids, dist):
+    """
+    Gets the river ids downstream at dist distance intervals
+
+    :param num_rivids: The maximum number of river ids to return
+    :type num_rivids: int
+    :param dist: The distance between river ids
+    :type dist: float
+    :return: The river ids downstream and the distances thereof
+    :rtype: tuple[list[int], list[float]]
+    """
+    global downstream_rivers_list
+    rivids = list()
+    dists = list()
+    net_distance = 0
+    for rivid in downstream_rivers_list:
+        if len(rivids) >= num_rivids:
+            break
+        net_distance += river_lengths[shp_comids.index(rivid)]
+        if net_distance > len(rivids) * dist:
+            rivids.append(rivid)
+            dists.append(net_distance)
+    return rivids, dists
 
 
-plt.title("River Discharge Over Time")
-plt.xlabel("Time (3 hours)")
-plt.ylabel("Average River Discharge (m^3/s)")
+def choose_downstream(rivid):
+    """
+    Chooses the new downstream as being rivid.
+
+    :param rivid: The id of the head of the river downstream
+    :type rivid: int or float or str
+    :return: The list of downstream rivers
+    :rtype: list[int]
+    """
+    global downstream_rivers_list
+    rivid = int(rivid)
+    downstream_rivers_list.append(rivid)
+    while rivid in connectivity:
+        rivid = connectivity[rivid][0]
+        downstream_rivers_list.append(rivid)
+    return downstream_rivers_list
 
 
 def on_pick(event):
@@ -372,75 +308,43 @@ def on_pick(event):
     :param event: Automatically generated by the event manager.
     :type event: mpl_backend_bases.PickEvent
     """
-    global currently_selected_river
-    global selected_rivers_list
     global offsets
+    global downstream_rivers_list
     offsets_temp = event.artist.get_offsets()[event.ind][0]
     if np.any(offsets):
         if np.all(np.isclose(offsets_temp, offsets, rtol=1e-3)):
             return
     offsets = offsets_temp
     i = 0
-    for c in coords:
-        if c[0] == offsets[0] and c[1] == offsets[1]:
+    for j in range(len(x_vals_array)):
+        if x_vals_array[i] == offsets[0] and y_vals_array[i] == offsets[1]:
             break
         i += 1
-    id = str(ind_id[i])
-    if select_multiple:
-        print("Selecting river", id)
-        selected_rivers_list.append(id)
-        return
-    currently_selected_river = id
-    paths = list()
-    done_paths = list()
+    id = Qout_data_ids[i]
     start_time = datetime.now()
     print("Showing downstream for", id)
-    paths.append(connectivity[id][0])
-    clear_plots()
-    p[str(id)].set_alpha(1)
-    selected_rivers_list.append(str(id))
-    if str(id) in rivers:
-        j = 0
-        for s in rivers[str(id)]:
-            rivers[str(id)][j].set_alpha(1)
-            j += 1
-    done_paths.append(str(id))
-    while paths:
-        curr_id = str(paths.pop())
-        if str(curr_id) not in p:
-            continue
-        paths.append(str(connectivity[str(curr_id)][0]))
-        downstream_rivers_list.append(str(connectivity[str(curr_id)][0]))
-        p[str(curr_id)].set_alpha(1)
-        selected_rivers_list.append(str(curr_id))
-        done_paths.append(str(curr_id))
-    paths, done_paths = done_paths, paths
-    while paths:
-        try:
-            curr_id = str(paths.pop())
-            if str(curr_id) not in rivers:
-                continue
-            j = 0
-            for s in rivers[str(curr_id)]:
-                try:
-                    rivers[str(curr_id)][j].set_alpha(1)
-                except:
-                    pass
-                j += 1
-            done_paths.append(str(curr_id))
-        except:
-            pass
-    paths, done_paths = done_paths, paths
-    while paths:
-        curr_id = str(paths.pop())
-        if str(curr_id) not in discharge_graph_rivers:
-            continue
-        j = 0
-        for s in discharge_graph_rivers[str(curr_id)]:
-            if str(curr_id) in discharge_graph_rivers:
-                discharge_graph_rivers[str(curr_id)][j].set_alpha(1)
-            j += 1
-        done_paths.append(str(curr_id))
+    choose_downstream(id)
+    ax.cla()
+    ax.set_title("Please click on one river reach")
+    ax.set_xlabel("Longitude")
+    ax.set_ylabel("Latitude")
+    c_p = [mpl.colors.to_rgba(default_point_color, 1)
+           if i in downstream_rivers_list
+           else mpl.colors.to_rgba(default_point_color, hidden_alpha)
+           for i in Qout_data_ids]
+    ax.scatter(
+        x_vals_array,
+        y_vals_array,
+        s=point_scaling,
+        picker=5,
+        color=c_p
+    )
+    c_l = [mpl.colors.to_rgba(b_c, 1)
+           if i in downstream_rivers_list
+           else mpl.colors.to_rgba(b_c, hidden_alpha)
+           for i in shp_comids]
+    [ax.plot(xy[0], xy[1], color=c, linewidth=default_linewidth)
+     for xy, c in zip(coord_arr, c_l)]
     print("Took",
           (datetime.now() - start_time).total_seconds(),
           "seconds to select")
@@ -501,11 +405,12 @@ def update_reach_dist(*args, **kwargs):
     try:
         reach_dist = float(reach_dist_str)
     except ValueError:
-        reach_dist = 5
+        reach_dist = default_reach_dist
     if reach_dist == 0:
         print("Error: Cannot have a distance between reaches of 0.\n\t"
-              "Using default value of 5", reach_dist_units, ".")
-        reach_dist = 5
+              "Using default value of",
+              default_reach_dist, str(reach_dist_units) + ".")
+        reach_dist = default_reach_dist
     print("Maintaining a distance of",
           reach_dist, reach_dist_units,
           "between river reaches")
@@ -523,13 +428,13 @@ def show_propagation(*args, **kwargs):
     fig_name = "River Propagation Time"
     if fig_name in plt.get_figlabels():
         return
-    rivers_list = downstream_rivers_list
     if not downstream_rivers_list:
         return
-    print("Drawing the event duration:")
+    rivids, dists = get_rivids_along_downstream(num_reaches, reach_dist)
+    print("Drawing the propagation timeseries:")
     time.sleep(sleep_time)
     bar = progressbar.ProgressBar(
-        maxval=num_reaches,
+        maxval=len(rivids),
         widgets=progressbarWidgets).start()
     i = 0
     fig_prop = plt.figure(label=fig_name)
@@ -537,70 +442,54 @@ def show_propagation(*args, **kwargs):
     plt.title(fig_name)
     plt.xlabel("Time (3 hours)")
     plt.ylabel("Distance (" + reach_dist_units + ")")
-    net_distance = 0
-    shown = False
-    k = 0
-    x_graphs = []
-    y_graphs = []
-    c_graphs = []
-    last_index = 0
-    last_x = 0
-    for r in rivers_list:
-        if r == 0:
+
+    first_s = None
+    last_dist = None
+    prev_x = None
+    for s, i, idx, d in zip(
+            [list(Qout_data_ids).index(rivid) for rivid in rivids],
+            list(range(len(rivids))),
+            rivids,
+            dists):
+        if i == 0:
+            first_s = s
+            last_dist = d
+            prev_x = 0
             continue
-        print("Graphing River", str(r))
-        if str(r) in rivers_list:
-            if not shown:
-                j = 0
-                try:
-                    for s in discharge_graph_rivers[str(r)]:
-                        index = list(Qout_data_ids).index(int(r))
-                        color = river_colors[str(r)]
-                        if k == 0:
-                            plt.scatter(0, 0, s=1, alpha=1, c=color)
-                            x_graphs.append(last_x)
-                            y_graphs.append(net_distance)
-                            c_graphs.append(color)
-                            last_index = index
-                            k += 1
-                            break
-                        x = Qout_data[:, last_index]
-                        y = Qout_data[:, index]
-                        corr = sm.tsa.stattools.ccf(x, y,
-                                                    adjusted=False, fft=True)
-                        last_x = list(corr).index(min(corr, key=abs))
-                        plt.scatter(last_x, DistFncs.deg2km(net_distance),
-                                    s=1, alpha=1, c=color)
-                        plt.plot([0, last_x],
-                                 [DistFncs.deg2km(y_graphs[-1]),
-                                  DistFncs.deg2km(net_distance)],
-                                 linewidth=0.5, alpha=1, c=color)
-                        x_graphs.append(last_x)
-                        y_graphs.append(net_distance)
-                        c_graphs.append(color)
-                        last_index = index
-                        k += 1
-                        break
-                        j += 1
-                    shown = True
-                except:
-                    pass
-            if str(r) in river_lengths:
-                net_distance += river_lengths[str(r)]
-                if net_distance >= k * get_reach_dist_deg():
-                    shown = False
-        if k >= num_reaches:
-            break
-        i += 1
-        bar.update(k)
+        x = Qout_data[:, first_s]
+        y = Qout_data[:, s]
+        corr = sm.tsa.stattools.ccf(x, y,
+                                    adjusted=True, fft=True)
+        last_x = list(corr).index(max(corr))
+        plt.grid(alpha=grid_alpha)
+        plt.scatter(
+            prev_x + last_x, d,
+            s=point_scaling,
+            alpha=1,
+            # c=b_c,
+        )
+        plt.plot(
+            [prev_x, prev_x + last_x],
+            [last_dist, d],
+            linewidth=default_linewidth,
+            alpha=1,
+            # color=b_c,
+            label=str(idx)
+        )
+        prev_x += last_x
+        first_s = s
+        last_dist = d
+        bar.update(i)
         sys.stdout.flush()
     time.sleep(sleep_time)
     bar.finish()
     time.sleep(sleep_time)
-    print("Finished drawing the event duration")
+    print("Finished drawing the propagation timeseries")
     ax_temp = plt.gca()
+    ax_temp.legend(loc="upper right")
     ax_temp.set_ylim(ax_temp.get_ylim()[::-1])
-    plt.show()
+    fig_prop.canvas.draw_idle()
+    plt.show(block=False)
 
 
 def show_event_duration(*args, **kwargs):
@@ -614,74 +503,52 @@ def show_event_duration(*args, **kwargs):
     fig_name = "Peak Duration"
     if fig_name in plt.get_figlabels():
         return
-    rivers_list = downstream_rivers_list
+    rivids, dists = get_rivids_along_downstream(num_reaches, reach_dist)
+    # rivers_list = downstream_rivers_list
     if not downstream_rivers_list:
         return
     i = 0
     print("Drawing the event duration:")
     time.sleep(sleep_time)
     bar = progressbar.ProgressBar(
-        maxval=len(rivers_list),
+        maxval=len(rivids),
         widgets=progressbarWidgets).start()
-    fig_temp, axs = plt.subplots(nrows=num_reaches,
-                                 sharex="all", sharey="all",
-                                 label=fig_name)
-    fig_temp.suptitle(fig_name)
-    fig_temp.supxlabel("Time (3 hours)")
-    fig_temp.supylabel(r"Magnitude (m^3/s)")
-    net_distance = 0
-    shown = False
-    threshold_min = ax_graph.get_ylim()[-1] * float(threshold_level) / 100
-    k = 0
-    for r in rivers_list:
-        if r == 0:
-            continue
-        if str(r) in rivers_list:
-            if not shown:
-                above_threshold_x = list()
-                above_threshold_y = list()
-                is_last_above_threshold = False
-                j = 0
-                if str(r) in discharge_graph_rivers:
-                    for s in discharge_graph_rivers[str(r)]:
-                        r_temp = discharge_graph_rivers[str(r)][j]
-                        x_temp, y_temp = r_temp.get_data()
-                        for y in y_temp:
-                            if y >= threshold_min:
-                                x = x_temp[list(y_temp).index(y)]
-                                if is_last_above_threshold:
-                                    above_threshold_x[-1].append(x)
-                                    above_threshold_y[-1].append(y)
-                                else:
-                                    above_threshold_x.append([x])
-                                    above_threshold_y.append([y])
-                                is_last_above_threshold = True
-                            else:
-                                is_last_above_threshold = False
-                        if len(list(above_threshold_y)) > 0:
-                            for xi, yi in zip(above_threshold_x,
-                                              above_threshold_y):
-                                axs[k].fill_between(
-                                    xi, [max(yi) for i in yi],
-                                    [threshold_min for i in yi],
-                                    color=peak_duration_color)
-                        j += 1
-                    shown = True
-            if str(r) in river_lengths:
-                net_distance += river_lengths[str(r)]
-            if net_distance >= k * get_reach_dist_deg():
-                k += 1
-                shown = False
-        if k >= num_reaches:
-            break
-        i += 1
+    fig_temp = plt.figure(label=fig_name)
+    plt.title(fig_name)
+    plt.xlabel("Time (3 hours)")
+    plt.ylabel(r"Magnitude (m^3/s)")
+    plt.grid(alpha=grid_alpha)
+    fig_temp.canvas.manager.set_window_title(fig_name)
+    color_swap = itertools.cycle(swapping_colors)
+    for s, i, idx in zip(
+            [list(Qout_data_ids).index(rivid) for rivid in rivids],
+            list(range(len(rivids))),
+            rivids):
+        color = next(color_swap)
+        y_percentile = np.percentile(Qout_data[:, s], float(threshold_level))
+        x_p = [xi for xi, yi in zip(
+            list(range(len(list(Qout_data[:, s])))),
+            list(Qout_data[:, s])) if yi >= y_percentile]
+        y_p = [yi for xi, yi in zip(
+            list(range(len(list(Qout_data[:, s])))),
+            list(Qout_data[:, s])) if yi >= y_percentile]
+        [plt.fill_between(xi, [yi - 20], [yi],
+                          alpha=1,
+                          color=color,
+                          label=str(idx)) if xi == x_p[0]
+         else plt.fill_between(xi, [yi - 20], [yi],
+                               alpha=1,
+                               color=color)
+         for xi, yi in zip(x_p, y_p)]
         bar.update(i)
         sys.stdout.flush()
     time.sleep(sleep_time)
     bar.finish()
     time.sleep(sleep_time)
-    print("Finished drawing the event duration")
-    plt.show()
+    print("Finished drawing the river discharges")
+    plt.legend(loc="upper right")
+    fig_temp.canvas.draw_idle()
+    plt.show(block=False)
 
 
 def get_reach_dist_deg():
@@ -701,7 +568,7 @@ def get_reach_dist_deg():
         return np.rad2deg(reach_dist)
     elif reach_dist_units == "Miles":
         return DistFncs.mi2deg(reach_dist)
-    return DistFncs.km2deg(5)
+    return DistFncs.km2deg(80)
 
 
 def show_discharge_over_time(*args, **kwargs):
@@ -715,84 +582,54 @@ def show_discharge_over_time(*args, **kwargs):
     discharge_title = "River Discharges Over Time"
     if discharge_title in plt.get_figlabels():
         return
-    rivers_list = downstream_rivers_list
     if not downstream_rivers_list:
         return
+    rivids, dists = get_rivids_along_downstream(num_reaches, reach_dist)
     print("Drawing the river discharges:")
     time.sleep(sleep_time)
     bar = progressbar.ProgressBar(
-        maxval=num_reaches,
+        maxval=len(rivids),
         widgets=progressbarWidgets).start()
-    i = 0
-    fig_temp, axs = plt.subplots(nrows=num_reaches,
+    fig_temp, axs = plt.subplots(nrows=len(rivids),
                                  sharex="all", sharey="all",
                                  label=discharge_title)
     fig_temp.suptitle("River Discharges Over Time")
     fig_temp.supxlabel("Time (3 hours)")
     fig_temp.supylabel(r"Average River Discharge (m^3/s)")
     fig_temp.canvas.manager.set_window_title(discharge_title)
-    net_distance = 0
-    shown = False
-    k = 0
-    for r in rivers_list:
-        if r == 0:
-            continue
-        if str(r) in rivers_list:
-            if not shown:
-                above_threshold_x = list()
-                above_threshold_y = list()
-                is_last_above_threshold = False
-                j = 0
-                if str(r) in discharge_graph_rivers:
-                    for s in discharge_graph_rivers[str(r)]:
-                        r_temp = discharge_graph_rivers[str(r)][j]
-                        x_temp, y_temp = r_temp.get_data()
-                        axs[k].plot(*r_temp.get_data(),
-                                    c=r_temp.get_color(),
-                                    linewidth=r_temp.get_linewidth(),
-                                    alpha=1,
-                                    label=str(r))
-                        axs[k].legend(loc="upper right")
-                        threshold_min = axs[k].get_ylim()[-1] * float(
-                            threshold_level) / 100
-                        for y in y_temp:
-                            if y >= threshold_min:
-                                x = x_temp[list(y_temp).index(y)]
-                                if is_last_above_threshold:
-                                    above_threshold_x[-1].append(x)
-                                    above_threshold_y[-1].append(
-                                        DistFncs.deg2km(y))
-                                else:
-                                    above_threshold_x.append([x])
-                                    above_threshold_y.append(
-                                        [DistFncs.deg2km(y)])
-                                is_last_above_threshold = True
-                            else:
-                                is_last_above_threshold = False
-                        if len(list(above_threshold_y)) > 0:
-                            for xi, yi in zip(above_threshold_x,
-                                              above_threshold_y):
-                                axs[k].fill_between(
-                                    xi, yi,
-                                    [threshold_min for i in yi],
-                                    color=default_point_color)
-                        j += 1
-                    shown = True
-            if str(r) in river_lengths:
-                net_distance += river_lengths[str(r)]
-            if net_distance >= k * get_reach_dist_deg():
-                k += 1
-                shown = False
-        if k >= num_reaches:
-            break
-        i += 1
-        bar.update(k)
+    for s, i, idx in zip(
+            [list(Qout_data_ids).index(rivid) for rivid in rivids],
+            list(range(len(rivids))),
+            rivids):
+        axs[i].grid(alpha=grid_alpha)
+        axs[i].plot(
+            list(range(Qout_data.shape[0])),
+            list(Qout_data[:, s]),
+            linewidth=default_linewidth,
+            alpha=1,
+            color=b_c,
+            label=str(idx)
+        )
+        y_percentile = np.percentile(Qout_data[:, s], float(threshold_level))
+        x_p = [xi for xi, yi in zip(
+            list(range(len(list(Qout_data[:, s])))),
+            list(Qout_data[:, s])) if yi >= y_percentile]
+        y_p = [yi for xi, yi in zip(
+            list(range(len(list(Qout_data[:, s])))),
+            list(Qout_data[:, s])) if yi >= y_percentile]
+        [axs[i].fill_between(xi, [y_percentile], [yi],
+                             alpha=1,
+                             color=g_c)
+         for xi, yi in zip(x_p, y_p)]
+        axs[i].legend(loc="upper right")
+        bar.update(i)
         sys.stdout.flush()
     time.sleep(sleep_time)
     bar.finish()
     time.sleep(sleep_time)
     print("Finished drawing the river discharges")
-    plt.show()
+    fig_temp.canvas.draw_idle()
+    plt.show(block=False)
 
 
 def get_total_distance(*args, **kwargs):
@@ -805,15 +642,9 @@ def get_total_distance(*args, **kwargs):
     :rtype: float
     """
     if not downstream_rivers_list:
-        return
-    net_distance = 0
-    for r in downstream_rivers_list:
-        if r == 0:
-            continue
-        if str(r) in downstream_rivers_list:
-            if str(r) in river_lengths:
-                net_distance += river_lengths[str(r)]
-    return net_distance
+        return 0
+    return sum([rl if rivid in downstream_rivers_list else 0
+                for rl, rivid in zip(river_lengths, shp_comids)])
 
 
 def redraw_canvases(*args, **kwargs):
@@ -905,49 +736,38 @@ def reset(*args, **kwargs):
     :param args: Unused parameter to allow function to work as a callback
     :param kwargs: Unused parameter to allow function to work as a callback
     """
-    global truncated_downstream
-    global selected_rivers_list
-    global currently_selected_river
     global downstream_rivers_list
     global offsets
     update_idle()
     print("Resetting view")
     start_time = datetime.now()
-    for path in p:
-        p[path].set_alpha(1)
-    for path in rivers:
-        j = 0
-        for s in rivers[path]:
-            rivers[path][j].set_alpha(1)
-            j += 1
-    for path in discharge_graph_rivers:
-        j = 0
-        while True:
-            try:
-                discharge_graph_rivers[path][j].set_alpha(1)
-            except IndexError:
-                break
-            except:
-                continue
-            j += 1
-    ax.set_xlim(default_xlims)
-    ax.set_ylim(default_ylims)
-    truncated_downstream = False
-    selected_rivers_list = list()
-    currently_selected_river = ""
+    ax.cla()
+    ax.set_title("Please click on one river reach")
+    ax.set_xlabel("Longitude")
+    ax.set_ylabel("Latitude")
+    [ax.plot(xi, yi, color=b_c, linewidth=default_linewidth)
+     for xi, yi in coord_arr]
+    ax.scatter(
+        x_vals_array,
+        y_vals_array,
+        s=point_scaling,
+        picker=5,
+        color=mpl.colors.to_rgba(default_point_color, 1)
+    )
     downstream_rivers_list = list()
     offsets = list()
     for i in plt.get_fignums():
         if i != 1:
             plt.close(i)
-    redraw_canvases()
+    fig.canvas.draw_idle()
     print("Finished resetting view")
-    print("Took", (datetime.now() - start_time).total_seconds(), "to reset")
+    print("Took", (datetime.now() - start_time).total_seconds(),
+          "seconds to reset")
 
 
 def save_all(*args, **kwargs):
     """
-    Saves all figures as svgs.
+    Saves all figures as svgs, pdf, and pngs.
 
     :param args: Unused parameter to allow function to work as a callback
     :param kwargs: Unused parameter to allow function to work as a callback
@@ -959,8 +779,12 @@ def save_all(*args, **kwargs):
         widgets=progressbarWidgets).start()
     i = 0
     for l in fig_labels:
-        plt.figure(l).savefig("./saved_outputs/" + str(l) + ".svg",
+        plt.figure(l).savefig("./saved_outputs/svgs/" + str(l) + ".svg",
                               format="svg")
+        plt.figure(l).savefig("./saved_outputs/pdfs/" + str(l) + ".svg",
+                              format="pdf")
+        plt.figure(l).savefig("./saved_outputs/pngs/" + str(l) + ".svg",
+                              format="png")
         i += 1
         bar.update(i)
         sys.stdout.flush()
@@ -1000,11 +824,21 @@ def create_config_window():
     ax_downstream_dist = plt.axes([0.025, 1 - 0.085, 0.9, 0.075])
     plt.axis("off")
     plt.text(
-        0, 0,
-        r"Total distance downstream of selected river reach (km):"
-        + r"                          "
-        + str(round(DistFncs.deg2km(get_total_distance()), 2))
+        x=0, y=0,
+        s=r"Total distance downstream of selected river reach (km):"
+          # + r"                          "
+          # + str(round(get_total_distance(), 2))
     )
+    ax_downstream_dist_num = plt.axes([0.875 + 0.09 / 2, 1 - 0.1, 0.09, 0.075])
+    plt.axis("off")
+    plt.text(
+        x=0, y=0,
+        s=str(round(get_total_distance(), 2)),
+        ha="center",
+        va="bottom",
+        transform=ax_downstream_dist_num.transAxes,
+    )
+
 
     ### Number of River Reaches ###
     ax_num_downstream = plt.axes([0.875, 1 - 0.1 - 0.095, 0.09, 0.075])
@@ -1049,9 +883,9 @@ def create_config_window():
     b_threshold_level.on_submit(set_threshold_level)
 
     ### Distance Based Discharge Over Time ###
-    ax_reach_dist = plt.axes([0.025, 0.025, 0.31, 0.4])
+    ax_show_discharge = plt.axes([0.025, 0.025, 0.31, 0.4])
     b_show_discharge = plt.Button(
-        ax_reach_dist,
+        ax_show_discharge,
         label="Show\nDischarge Timeseries",
         color=b_c,
         hovercolor=b_c_a,
@@ -1091,6 +925,8 @@ fig_config.canvas.mpl_connect("key_press_event", update_idle)
 fig_config.canvas.mpl_connect("key_release_event", update_idle)
 fig_config.canvas.mpl_connect("motion_notify_event", update_idle)
 fig_config.canvas.mpl_connect("resize_event", fix_config_size)
+
+fig.canvas.mpl_connect("motion_notify_event", redraw_canvases)
 
 ### Total Distance of Downstream Selected River Reach ###
 ax_downstream_dist = plt.axes([0.025, 1 - 0.085, 0.9, 0.075])
@@ -1145,9 +981,9 @@ b_threshold_level.on_text_change(update_idle())
 b_threshold_level.on_submit(set_threshold_level)
 
 ### Distance Based Discharge Over Time ###
-ax_reach_dist = plt.axes([0.025, 0.025, 0.31, 0.4])
+ax_show_discharge = plt.axes([0.025, 0.025, 0.31, 0.4])
 b_show_discharge = plt.Button(
-    ax_reach_dist,
+    ax_show_discharge,
     label="Show\nDischarge Timeseries",
     color=widget_bg,
     hovercolor=widget_bg_active,
@@ -1200,6 +1036,5 @@ fig.canvas.draw()
 fig_config.canvas.draw()
 fig.canvas.manager.set_window_title("River Network")
 fig_config.canvas.manager.set_window_title("Control Room")
-plt.close(fig_graph)
 plt.close(fig_config)
 plt.show(block=True)
