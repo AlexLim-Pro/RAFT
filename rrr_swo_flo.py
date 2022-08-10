@@ -122,7 +122,7 @@ skip_rerender = False
 max_river_selections = 10
 enlarged_rivers = list()
 hidden_alpha = 0.1
-point_scaling = 1
+point_scaling = 2
 num_reaches_str = "3"
 num_reaches = int(num_reaches_str)
 reach_dist_str = "117"
@@ -134,7 +134,7 @@ have_cleared_view = False
 shown_rivers_list = list()
 default_xlims = list()
 default_ylims = list()
-threshold_level = "70"
+threshold_level = "90"
 sleep_time = 0.01
 showing_river_discharges = False
 default_linewidth = 1
@@ -236,6 +236,7 @@ b_quit = plt.Button(
     color=quit_bg,
     hovercolor=quit_bg_active,
 )
+b_quit.label.set_fontsize(14)
 
 ### Reset Option ###
 ax_reset = plt.axes([0.875, 1 - 0.05 - 0.075 * 2 - 0.01, 0.1, 0.075])
@@ -245,6 +246,7 @@ b_reset = plt.Button(
     color=widget_bg,
     hovercolor=widget_bg_active,
 )
+b_reset.label.set_fontsize(14)
 
 ### Option to Save All ###
 ax_save = plt.axes([0.875, 1 - 0.05 - 0.075 * 3 - 0.02, 0.1, 0.075])
@@ -611,16 +613,13 @@ def show_discharge_over_time(*args, **kwargs):
             label=str(idx)
         )
         y_percentile = np.percentile(Qout_data[:, s], float(threshold_level))
-        x_p = [xi for xi, yi in zip(
-            list(range(len(list(Qout_data[:, s])))),
-            list(Qout_data[:, s])) if yi >= y_percentile]
-        y_p = [yi for xi, yi in zip(
-            list(range(len(list(Qout_data[:, s])))),
-            list(Qout_data[:, s])) if yi >= y_percentile]
-        [axs[i].fill_between(xi, [y_percentile], [yi],
-                             alpha=1,
-                             color=g_c)
-         for xi, yi in zip(x_p, y_p)]
+        axs[i].fill_between(x=list(range(len(list(Qout_data[:, s])))),
+                            y1=[y_percentile] * len(list(Qout_data[:, s])),
+                            y2=list(Qout_data[:, s]),
+                            where=[yi >= y_percentile
+                                   for yi in list(Qout_data[:, s])],
+                            alpha=1,
+                            color="#FFFFFF")
         axs[i].legend(loc="upper right")
         bar.update(i)
         sys.stdout.flush()
