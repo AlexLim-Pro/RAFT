@@ -781,9 +781,9 @@ def save_all(*args, **kwargs):
     for l in fig_labels:
         plt.figure(l).savefig("./saved_outputs/svgs/" + str(l) + ".svg",
                               format="svg")
-        plt.figure(l).savefig("./saved_outputs/pdfs/" + str(l) + ".svg",
+        plt.figure(l).savefig("./saved_outputs/pdfs/" + str(l) + ".pdf",
                               format="pdf")
-        plt.figure(l).savefig("./saved_outputs/pngs/" + str(l) + ".svg",
+        plt.figure(l).savefig("./saved_outputs/pngs/" + str(l) + ".png",
                               format="png")
         i += 1
         bar.update(i)
