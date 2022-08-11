@@ -771,6 +771,7 @@ def save_all(*args, **kwargs):
     :param args: Unused parameter to allow function to work as a callback
     :param kwargs: Unused parameter to allow function to work as a callback
     """
+    print("Saving all figures as svgs, pdf, and pngs")
     time.sleep(sleep_time)
     fig_labels = plt.get_figlabels()
     bar = progressbar.ProgressBar(
@@ -790,7 +791,7 @@ def save_all(*args, **kwargs):
     time.sleep(sleep_time)
     bar.finish()
     time.sleep(sleep_time)
-    print("Finished saving all figures as svgs")
+    print("Finished saving all figures as svgs, pdf, and pngs")
 
 
 def create_config_window():
