@@ -465,22 +465,21 @@ def show_propagation(*args, **kwargs):
         last_x = list(corr).index(max(corr))
         plt.grid(alpha=grid_alpha)
         plt.scatter(
-            prev_x + last_x, d,
+            prev_x + last_x, last_dist + d,
             s=point_scaling,
             alpha=1,
             # c=b_c,
         )
         plt.plot(
             [prev_x, prev_x + last_x],
-            [last_dist, d],
+            [last_dist, last_dist + d],
             linewidth=default_linewidth,
             alpha=1,
             # color=b_c,
             label=str(idx)
         )
         prev_x += last_x
-        first_s = s
-        last_dist = d
+        last_dist += d
         bar.update(i)
         sys.stdout.flush()
     time.sleep(sleep_time)
@@ -724,7 +723,7 @@ def close_all(*args, **kwargs):
     :param args: Unused parameter to allow function to work as a callback
     :param kwargs: Unused parameter to allow function to work as a callback
     """
-    print("Quitting SWOF.\nSee you next time!")
+    print("Quitting RAFT.\nSee you next time!")
     plt.close("all")
 
 
