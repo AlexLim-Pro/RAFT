@@ -1,4 +1,4 @@
-# Surface Water and Observable Flow
+# Rivers and Flow Traversal
 
 ---
 
@@ -16,7 +16,7 @@ _PI: Cédric David_
 
 ### Abstract
 
-Despite over 332 million cubic miles of water on Earth, over 97 percent is saline.  Of that three percent of freshwater, 69 percent is locked up in ice and glaciers and 30 percent is underground.  Fresh surface water makes up the remaining one percent; however, it is this 1/150th of one percent of Earth’s water that makes up the large majority of our freshwater supply.  To better understand and observe Earth’s surface water, NASA has established and is developing satellites such as the future SWOT and NISAR missions.  This project–SWOF (Surface Water and Observable Flow)–seeks to use current and future data to better understand and communicate the propagation of water through space and time within rivers.
+Despite over 332 million cubic miles of water on Earth, over 97 percent is saline.  Of that three percent of freshwater, 69 percent is locked up in ice and glaciers and 30 percent is underground.  Fresh surface water makes up the remaining one percent; however, it is this 1/150th of one percent of Earth’s water that makes up the large majority of our freshwater supply.  To better understand and observe Earth’s surface water, NASA has established and is developing satellites such as the future SWOT and NISAR missions.  This project–RAFT (Rivers and Flow Traversal )–seeks to use current and future data to better understand and communicate the propagation of water through space and time within rivers.
 
 ---
 
@@ -30,7 +30,7 @@ Sample data can be found at [https://zenodo.org/record/3688691](https://zenodo.o
 
 Important assets are included in [assets](assets).
 
-When running SWOF, please click on one river reach to begin data analysis.
+When running RAFT, please click on one river reach to begin data analysis.
 
 #### [rrr_swo_flo.py](rrr_swo_flo.py)
 
