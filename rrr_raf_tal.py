@@ -28,6 +28,7 @@ import matplotlib.widgets
 import numpy as np
 import progressbar
 import statsmodels.api as sm
+from PIL import Image
 from scipy.io import netcdf_file
 from shapely.geometry import LineString, MultiLineString
 from svgpath2mpl import parse_path
@@ -120,6 +121,7 @@ sf_path = "../San_Gaud_data/NHDFlowline_San_Guad/NHDFlowline_San_Guad.shp"
 Qout_f_path = "../San_Gaud_data/Qout_San_Guad_exp00.nc"
 
 skip_rerender = False
+num_decimals = 2
 mpl_backend_bases = matplotlib.backend_bases
 fig, ax = plt.subplots(label="River Network")
 ax.grid(alpha=0.1)
@@ -138,6 +140,7 @@ reach_dist_units = "km"
 threshold_level = "90"
 sleep_time = 0.01
 default_linewidth = 1
+im = Image.open("./assets/gifs/RAFT.gif")
 
 
 ##### Declaration of variables (given as command line arguments) #####
@@ -158,6 +161,33 @@ if IS_arg > 1:
         sf_path = sys.argv[3]
         if IS_arg > 3:
             Qout_f_path = sys.argv[4]
+
+
+def lat_long_coord_format(x, y):
+    """
+    Format for latitude and longitude coordinates
+
+    :param x: The longitude
+    :type x: float
+    :param y: The latitude
+    :type y: float
+    :return: The formatted coordinates
+    :rtype: str
+    """
+    long = str(abs(round(x, num_decimals)))
+    lat = str(abs(round(y, num_decimals)))
+    if x >= 0:
+        long += "°E"
+    else:
+        long += "°W"
+    if y >= 0:
+        lat += "°N, "
+    else:
+        lat += "°S, "
+    return lat + long
+
+
+ax.format_coord = lat_long_coord_format
 
 Qout_f = netcdf_file(Qout_f_path, "r")
 
@@ -273,6 +303,8 @@ def get_rivids_along_downstream(num_rivids, dist):
     for rivid in downstream_rivers_list:
         if len(rivids) >= num_rivids:
             break
+        if rivid not in shp_comids:
+            break
         net_distance += river_lengths[shp_comids.index(rivid)]
         if net_distance > len(rivids) * dist:
             rivids.append(rivid)
@@ -387,14 +419,18 @@ def set_threshold_level(*args, **kwargs):
     :param kwargs: Unused parameter to allow function to work as a callback
     """
     global threshold_level
-    threshold_level = b_threshold_level.text
+    threshold_level_temp = b_threshold_level.text
     if float(threshold_level) > 100:
         print("Error: Cannot set threshold level above 100%.")
-        threshold_level = "100"
+        threshold_level_temp = "100"
     elif float(threshold_level) < 0:
         print("Error: Cannot set threshold level to below 0%.")
-        threshold_level = "0"
-    print("Setting the river threshold level to " + threshold_level + "%.")
+        threshold_level_temp = "0"
+    if threshold_level == threshold_level_temp:
+        update_idle()
+        return
+    print("Setting the river threshold level to " +
+          threshold_level + " percentile.")
     update_idle()
 
 
@@ -461,6 +497,7 @@ def show_propagation(*args, **kwargs):
     :param kwargs: Unused parameter to allow function to work as a callback
     """
     global fig_prop
+    global axs_prop
     update_idle()
     fig_name = "River Propagation Time"
     if fig_name in plt.get_figlabels():
@@ -473,12 +510,15 @@ def show_propagation(*args, **kwargs):
     bar = progressbar.ProgressBar(
         maxval=len(rivids),
         widgets=progressbarWidgets).start()
-    i = 0
-    fig_prop = plt.figure(label=fig_name)
+    fig_prop, axs_prop = plt.subplots(label=fig_name)
+    axs_prop.format_coord = lambda x, y: \
+        str(round(y, num_decimals)) + " km at " + \
+        str(round(x * 3, num_decimals)) + " hours"
     fig_prop.canvas.manager.set_window_title(fig_name)
     plt.title(fig_name)
     plt.xlabel("Time (3 hours)")
     plt.ylabel("Distance (" + reach_dist_units + ")")
+    color_swap = itertools.cycle(swapping_colors)
 
     first_s = None
     last_dist = None
@@ -499,18 +539,19 @@ def show_propagation(*args, **kwargs):
                                     adjusted=True, fft=True)
         last_x = list(corr).index(max(corr))
         plt.grid(alpha=grid_alpha)
+        color = mpl.colors.to_rgba(next(color_swap), 1)
         plt.scatter(
             prev_x + last_x, last_dist + d,
             s=point_scaling,
             alpha=1,
-            # c=b_c,
+            color=color,
         )
         plt.plot(
             [prev_x, prev_x + last_x],
             [last_dist, last_dist + d],
             linewidth=default_linewidth,
             alpha=1,
-            # color=b_c,
+            color=color,
             label=str(idx)
         )
         prev_x += last_x
@@ -535,7 +576,8 @@ def show_event_duration(*args, **kwargs):
     :param args: Unused parameter to allow function to work as a callback
     :param kwargs: Unused parameter to allow function to work as a callback
     """
-    global fig_peak_duration
+    global fig_peak_dur
+    global axs_peak_dur
     update_idle()
     fig_name = "Peak Duration"
     if fig_name in plt.get_figlabels():
@@ -543,18 +585,20 @@ def show_event_duration(*args, **kwargs):
     rivids, dists = get_rivids_along_downstream(num_reaches, reach_dist)
     if not downstream_rivers_list:
         return
-    i = 0
     print("Drawing the event duration:")
     time.sleep(sleep_time)
     bar = progressbar.ProgressBar(
         maxval=len(rivids),
         widgets=progressbarWidgets).start()
-    fig_peak_duration = plt.figure(label=fig_name)
+    fig_peak_dur, axs_peak_dur = plt.subplots(label=fig_name)
+    axs_peak_dur.format_coord = lambda x, y: \
+        str(round(y, num_decimals)) + " km at " + \
+        str(round(x * 3, num_decimals)) + " hours"
     plt.title(fig_name)
     plt.xlabel("Time (3 hours)")
-    plt.ylabel(r"Magnitude (m^3/s)")
+    plt.ylabel(r"Magnitude (m³/s)")
     plt.grid(alpha=grid_alpha)
-    fig_peak_duration.canvas.manager.set_window_title(fig_name)
+    fig_peak_dur.canvas.manager.set_window_title(fig_name)
     color_swap = itertools.cycle(swapping_colors)
     for s, i, idx in zip(
             [list(Qout_data_ids).index(rivid) for rivid in rivids],
@@ -583,7 +627,7 @@ def show_event_duration(*args, **kwargs):
     time.sleep(sleep_time)
     print("Finished drawing the river discharges")
     plt.legend(loc="upper right")
-    fig_peak_duration.canvas.draw_idle()
+    fig_peak_dur.canvas.draw_idle()
     plt.show(block=False)
 
 
@@ -613,7 +657,7 @@ def show_discharge_over_time(*args, **kwargs):
                                                 label=discharge_title)
     fig_discharge.suptitle("River Discharges Over Time")
     fig_discharge.supxlabel("Time (3 hours)")
-    fig_discharge.supylabel(r"Average River Discharge (m^3/s)")
+    fig_discharge.supylabel(r"Average River Discharge (m³/s)")
     fig_discharge.canvas.manager.set_window_title(discharge_title)
     color_swap = itertools.cycle(swapping_colors)
     colors = [mpl.colors.to_rgba(next(color_swap), 1)
@@ -623,6 +667,9 @@ def show_discharge_over_time(*args, **kwargs):
             list(range(len(rivids))),
             colors,
             rivids):
+        axs_discharge[i].format_coord = lambda x, y:\
+            str(round(y, num_decimals)) + " m³/s at " +\
+            str(round(x * 3, num_decimals)) + " hours"
         axs_discharge[i].grid(alpha=grid_alpha)
         axs_discharge[i].plot(
             list(range(Qout_data.shape[0])),
@@ -686,6 +733,32 @@ def update_idle(*args, **kwargs):
     :param args: Unused parameter to allow function to work as a callback
     :param kwargs: Unused parameter to allow function to work as a callback
     """
+    fig_config.canvas.draw_idle()
+
+
+def update_gif(*args, **kwargs):
+    """
+    Updates gif elements for canvases
+
+    :param args: Unused parameter to allow function to work as a callback
+    :param kwargs: Unused parameter to allow function to work as a callback
+    """
+    global im
+    global b_gif
+    global idle_timer
+    try:
+        im.seek(im.tell() + 1)
+        ax_gif.cla()
+        b_gif = plt.Button(
+            ax_gif,
+            label="",
+            image=im,
+            color=mpl.colors.to_rgba("#FFFFFF", 0),
+            hovercolor=mpl.colors.to_rgba("#FFFFFF", 0),
+        )
+    except EOFError:
+        im = Image.open("./assets/gifs/RAFT.gif")
+    idle_timer = fig_config.canvas.new_timer(interval=1000 / 30)
     fig_config.canvas.draw_idle()
 
 
@@ -792,8 +865,16 @@ def save_all(*args, **kwargs):
 
 
 def create_config_window():
+    """
+    Creates the configuration window
+    """
     global fig_config
+    global idle_timer
+    global im
+    global ax_gif
+    global b_gif
     global ax_downstream_dist
+    global b_downstream_dist
     global ax_num_downstream
     global b_num_reaches
     global ax_reach_dist
@@ -816,35 +897,41 @@ def create_config_window():
     fig_config.canvas.mpl_connect("key_release_event", update_idle)
     fig_config.canvas.mpl_connect("motion_notify_event", update_idle)
     fig_config.canvas.mpl_connect("resize_event", fix_config_size)
+    idle_timer = fig_config.canvas.new_timer(interval=1000 / 30)
+    idle_timer.add_callback(update_gif)
+    idle_timer.start()
+
+    ### RAFT Logo ###
+    ax_gif = plt.axes([-0.1, 0.5, 0.5, 0.5])
+    b_gif = plt.Button(
+        ax_gif,
+        label="",
+        image=im,
+        color=mpl.colors.to_rgba("#FFFFFF", 0),
+        hovercolor=mpl.colors.to_rgba("#FFFFFF", 0),
+    )
 
     ### Total Distance of Downstream Selected River Reach ###
-    ax_downstream_dist = plt.axes([0.025, 1 - 0.085, 0.9, 0.075])
-    plt.axis("off")
-    plt.text(
-        x=0, y=0,
-        s=r"Total distance downstream of selected river reach (km):"
-          # + r"                          "
-          # + str(round(get_total_distance(), 2))
+    ax_downstream_dist = plt.axes([0.875, 1 - 0.1, 0.09, 0.075])
+    b_downstream_dist = matplotlib.widgets.TextBox(
+        ax_downstream_dist,
+        label=r"Total distance downstream (km):",
+        # initial=str(round(get_total_distance(), 2)),
+        initial="694.19",
+        textalignment="center",
+        label_pad=0.5,
+        color=mpl.colors.to_rgba("#FFFFFF", 0),
+        hovercolor=mpl.colors.to_rgba("#FFFFFF", 0),
     )
-    ax_downstream_dist_num = plt.axes([0.875 + 0.09 / 2, 1 - 0.1, 0.09, 0.075])
-    plt.axis("off")
-    plt.text(
-        x=0, y=0,
-        s=str(round(get_total_distance(), 2)),
-        ha="center",
-        va="bottom",
-        transform=ax_downstream_dist_num.transAxes,
-    )
-
 
     ### Number of River Reaches ###
     ax_num_downstream = plt.axes([0.875, 1 - 0.1 - 0.095, 0.09, 0.075])
     b_num_reaches = matplotlib.widgets.TextBox(
         ax_num_downstream,
-        label="Enter number of downstream river reaches to be analyzed:",
+        label="Number of downstream:",
         initial=num_reaches_str,
         textalignment="center",
-        label_pad=1.656,
+        label_pad=0.5,
         color=widget_bg,
         hovercolor=widget_bg_active,
     )
@@ -855,10 +942,10 @@ def create_config_window():
     ax_reach_dist = plt.axes([0.875, 1 - 0.1 - 0.095 * 2, 0.09, 0.075])
     b_reach_dist = matplotlib.widgets.TextBox(
         ax_reach_dist,
-        label="Enter distance separating river reaches to be analyzed (km):",
+        label="Distance separating reaches (km):",
         initial=reach_dist_str,
         textalignment="center",
-        label_pad=1.45,
+        label_pad=0.5,
         color=widget_bg,
         hovercolor=widget_bg_active,
     )
@@ -869,14 +956,14 @@ def create_config_window():
     ax_threshold_level = plt.axes([0.875, 1 - 0.1 - 0.095 * 3, 0.09, 0.075])
     b_threshold_level = matplotlib.widgets.TextBox(
         ax_threshold_level,
-        label=r"Enter percentile for event detection in each river reach (%):",
+        label=r"Percentile for event detection:",
         initial=threshold_level,
         textalignment="center",
-        label_pad=1.612,
+        label_pad=0.5,
         color=widget_bg,
         hovercolor=widget_bg_active,
     )
-    b_threshold_level.on_text_change(update_idle())
+    b_threshold_level.on_text_change(update_idle)
     b_threshold_level.on_submit(set_threshold_level)
 
     ### Distance Based Discharge Over Time ###
@@ -913,98 +1000,40 @@ def create_config_window():
 
 
 ##### Config Window #####
-fig_config = plt.figure(figsize=(5.5, 2.5),
-                        label="Control Room")
-fig_config.canvas.mpl_connect("pick_event", update_idle)
-fig_config.canvas.mpl_connect("button_press_event", update_idle)
-fig_config.canvas.mpl_connect("button_release_event", update_idle)
-fig_config.canvas.mpl_connect("key_press_event", update_idle)
-fig_config.canvas.mpl_connect("key_release_event", update_idle)
-fig_config.canvas.mpl_connect("motion_notify_event", update_idle)
-fig_config.canvas.mpl_connect("resize_event", fix_config_size)
+fig_config = plt.figure()
+idle_timer = fig_config.canvas.new_timer(interval=1000 / 30)
 
-fig.canvas.mpl_connect("motion_notify_event", redraw_canvases)
+### RAFT Logo ###
+ax_gif = plt.axes([1, 1, 1, 1])
+b_gif = plt.Button(ax_gif, "")
 
 ### Total Distance of Downstream Selected River Reach ###
-ax_downstream_dist = plt.axes([0.025, 1 - 0.085, 0.9, 0.075])
-plt.axis("off")
-plt.text(
-    0, 0,
-    r"Total distance downstream of selected river reach (km):"
-    + r"                             "
-    + str(300)
-)
+ax_downstream_dist = plt.axes([1, 1, 1, 1])
+b_downstream_dist = matplotlib.widgets.TextBox(ax_downstream_dist, "")
 
 ### Number of River Reaches ###
-ax_num_downstream = plt.axes([0.875, 1 - 0.1 - 0.095, 0.09, 0.075])
-b_num_reaches = matplotlib.widgets.TextBox(
-    ax_num_downstream,
-    label="Enter number of downstream river reaches to be analyzed:",
-    initial=num_reaches_str,
-    textalignment="center",
-    label_pad=1.64,
-    color=widget_bg,
-    hovercolor=widget_bg_active,
-)
-b_num_reaches.on_text_change(update_idle)
-b_num_reaches.on_submit(update_num_reaches)
+ax_num_downstream = plt.axes([1, 1, 1, 1])
+b_num_reaches = matplotlib.widgets.TextBox(ax_num_downstream, "")
 
 ### Distance Between Reaches ###
-ax_reach_dist = plt.axes([0.875, 1 - 0.1 - 0.095 * 2, 0.09, 0.075])
-b_reach_dist = matplotlib.widgets.TextBox(
-    ax_reach_dist,
-    label="Enter distance separating river reaches to be analyzed (km):",
-    initial=reach_dist_str,
-    textalignment="center",
-    label_pad=1.43,
-    color=widget_bg,
-    hovercolor=widget_bg_active,
-)
-b_reach_dist.on_text_change(update_idle)
-b_reach_dist.on_submit(update_reach_dist)
+ax_reach_dist = plt.axes([1, 1, 1, 1])
+b_reach_dist = matplotlib.widgets.TextBox(ax_reach_dist, "")
 
 ### Threshold Level ###
-ax_threshold_level = plt.axes([0.875, 1 - 0.1 - 0.095 * 3, 0.09, 0.075])
-b_threshold_level = matplotlib.widgets.TextBox(
-    ax_threshold_level,
-    label=r"Enter percentile for event detection in each river reach (%):",
-    initial=threshold_level,
-    textalignment="center",
-    label_pad=1.59,
-    color=widget_bg,
-    hovercolor=widget_bg_active,
-)
-b_threshold_level.on_text_change(update_idle())
-b_threshold_level.on_submit(set_threshold_level)
+ax_threshold_level = plt.axes([1, 1, 1, 1])
+b_threshold_level = matplotlib.widgets.TextBox(ax_threshold_level, "")
 
 ### Distance Based Discharge Over Time ###
-ax_show_discharge = plt.axes([0.025, 0.025, 0.31, 0.4])
-b_show_discharge = plt.Button(
-    ax_show_discharge,
-    label="Show\nDischarge Timeseries",
-    color=widget_bg,
-    hovercolor=widget_bg_active,
-)
-b_show_discharge.on_clicked(show_discharge_over_time)
+ax_show_discharge = plt.axes([1, 1, 1, 1])
+b_show_discharge = plt.Button(ax_show_discharge, "")
 
 ### Propagation ###
-ax_propagation = plt.axes([0.025 + 0.32, 0.025, 0.31, 0.4])
-b_propagation = plt.Button(
-    ax_propagation,
-    label="Show\nFlow Wave Propagation",
-    color=widget_bg,
-    hovercolor=widget_bg_active,
-)
-b_propagation.on_clicked(show_propagation)
+ax_propagation = plt.axes([1, 1, 1, 1])
+b_propagation = plt.Button(ax_propagation, "")
 
 ### Event Duration ###
-ax_event_dur = plt.axes([0.025 + 0.32 * 2, 0.025, 0.31, 0.4])
-b_event_dur = plt.Button(
-    ax_event_dur,
-    label="Show\nEvent Duration",
-    color=widget_bg,
-    hovercolor=widget_bg_active,
-)
+ax_event_dur = plt.axes([1, 1, 1, 1])
+b_event_dur = plt.Button(ax_event_dur, "")
 b_event_dur.on_clicked(show_event_duration)
 
 
@@ -1029,10 +1058,10 @@ fig_config.canvas.draw()
 fig.canvas.manager.set_window_title("River Network")
 fig_config.canvas.manager.set_window_title("Control Room")
 plt.close(fig_config)
-fig_prop = plt.figure()
+fig_prop, axs_prop = plt.subplots()
 fig_discharge, axs_discharge = plt.subplots()
-fig_peak_duration = plt.figure()
+fig_peak_dur, axs_peak_dur = plt.subplots()
 plt.close(fig_discharge)
 plt.close(fig_prop)
-plt.close(fig_peak_duration)
+plt.close(fig_peak_dur)
 plt.show(block=True)
