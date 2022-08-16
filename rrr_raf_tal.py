@@ -57,8 +57,8 @@ mpl.rcParams["font.family"] = "sans-serif"
 mpl.rcParams["font.sans-serif"] = prop.get_name()
 
 grid_alpha = 0.1
-widget_bg = "#F0852D"
-widget_bg_active = "#F8B723"
+widget_bg = "#595959"
+widget_bg_active = "#696969"
 quit_bg = "#CC0202"
 quit_bg_active = "#FF0000"
 b_c = "#0492C2"
@@ -263,7 +263,7 @@ b_quit = plt.Button(
     color=quit_bg,
     hovercolor=quit_bg_active,
 )
-b_quit.label.set_fontsize(14)
+b_quit.label.set_fontsize(10)
 
 ### Reset Option ###
 ax_reset = plt.axes([0.875, 1 - 0.05 - 0.075 * 2 - 0.01, 0.1, 0.075])
@@ -273,7 +273,7 @@ b_reset = plt.Button(
     color=widget_bg,
     hovercolor=widget_bg_active,
 )
-b_reset.label.set_fontsize(14)
+b_reset.label.set_fontsize(10)
 
 ### Option to Save All ###
 ax_save = plt.axes([0.875, 1 - 0.05 - 0.075 * 3 - 0.02, 0.1, 0.075])
@@ -283,6 +283,7 @@ b_save = plt.Button(
     color=g_c,
     hovercolor=g_c_a,
 )
+b_save.label.set_fontsize(10)
 
 
 def get_rivids_along_downstream(num_rivids, dist):
@@ -912,10 +913,10 @@ def create_config_window():
     )
 
     ### Total Distance of Downstream Selected River Reach ###
-    ax_downstream_dist = plt.axes([0.875, 1 - 0.1, 0.09, 0.075])
+    ax_downstream_dist = plt.axes([0.875, 1 - 0.2, 0.09, 0.075])
     b_downstream_dist = matplotlib.widgets.TextBox(
         ax_downstream_dist,
-        label=r"Total distance downstream (km):",
+        label=r"Distance downstream (km):",
         initial=str(round(get_total_distance(), 2)),
         textalignment="center",
         label_pad=0.5,
@@ -924,10 +925,10 @@ def create_config_window():
     )
 
     ### Number of River Reaches ###
-    ax_num_downstream = plt.axes([0.875, 1 - 0.1 - 0.095, 0.09, 0.075])
+    ax_num_downstream = plt.axes([0.875, 1 - 0.2 - 0.095, 0.09, 0.075])
     b_num_reaches = matplotlib.widgets.TextBox(
         ax_num_downstream,
-        label="Number of downstream:",
+        label=r"# observation points:",
         initial=num_reaches_str,
         textalignment="center",
         label_pad=0.5,
@@ -938,10 +939,10 @@ def create_config_window():
     b_num_reaches.on_submit(update_num_reaches)
 
     ### Distance Between Reaches ###
-    ax_reach_dist = plt.axes([0.875, 1 - 0.1 - 0.095 * 2, 0.09, 0.075])
+    ax_reach_dist = plt.axes([0.875, 1 - 0.2 - 0.095 * 2, 0.09, 0.075])
     b_reach_dist = matplotlib.widgets.TextBox(
         ax_reach_dist,
-        label="Distance separating reaches (km):",
+        label="Distance between reaches (km):",
         initial=reach_dist_str,
         textalignment="center",
         label_pad=0.5,
@@ -952,10 +953,10 @@ def create_config_window():
     b_reach_dist.on_submit(update_reach_dist)
 
     ### Threshold Level ###
-    ax_threshold_level = plt.axes([0.875, 1 - 0.1 - 0.095 * 3, 0.09, 0.075])
+    ax_threshold_level = plt.axes([0.875, 1 - 0.2 - 0.095 * 3, 0.09, 0.075])
     b_threshold_level = matplotlib.widgets.TextBox(
         ax_threshold_level,
-        label=r"Percentile for event detection:",
+        label=r"Threshold:",
         initial=threshold_level,
         textalignment="center",
         label_pad=0.5,
