@@ -916,8 +916,7 @@ def create_config_window():
     b_downstream_dist = matplotlib.widgets.TextBox(
         ax_downstream_dist,
         label=r"Total distance downstream (km):",
-        # initial=str(round(get_total_distance(), 2)),
-        initial="694.19",
+        initial=str(round(get_total_distance(), 2)),
         textalignment="center",
         label_pad=0.5,
         color=mpl.colors.to_rgba("#FFFFFF", 0),
