@@ -6,7 +6,7 @@
   <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:date>2022-08-15T21:45:01.870046</dc:date>
+    <dc:date>2022-08-15T22:55:06.987616</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <cc:Agent>
@@ -30,7 +30,7 @@ z
   </g>
   <g id="axes_1">
    <g id="text_1">
-    <!-- Total distance downstream of selected river reach (km): -->
+    <!-- Total distance downstream (km): -->
     <g style="fill: #ffffff" transform="translate(9.9 15.3)scale(0.1 -0.1)">
      <defs>
       <path id="Inter-54" d="M 309 4155 
@@ -394,61 +394,6 @@ L 1027 0
 L 491 0 
 z
 " transform="scale(0.015625)"/>
-      <path id="Inter-66" d="M 2046 3491 
-L 2046 3036 
-L 164 3036 
-L 164 3491 
-L 2046 3491 
-z
-M 727 0 
-L 727 3973 
-Q 727 4273 868 4473 
-Q 1009 4673 1234 4773 
-Q 1459 4873 1709 4873 
-Q 1907 4873 2032 4841 
-Q 2157 4809 2218 4782 
-L 2064 4318 
-Q 2023 4332 1951 4352 
-Q 1880 4373 1764 4373 
-Q 1498 4373 1381 4239 
-Q 1264 4105 1264 3845 
-L 1264 0 
-L 727 0 
-z
-" transform="scale(0.015625)"/>
-      <path id="Inter-76" d="M 3346 3491 
-L 2055 0 
-L 1509 0 
-L 218 3491 
-L 800 3491 
-L 1764 709 
-L 1800 709 
-L 2764 3491 
-L 3346 3491 
-z
-" transform="scale(0.015625)"/>
-      <path id="Inter-68" d="M 1027 2100 
-L 1027 0 
-L 491 0 
-L 491 4655 
-L 1027 4655 
-L 1027 2945 
-L 1073 2945 
-Q 1196 3216 1442 3376 
-Q 1689 3536 2100 3536 
-Q 2457 3536 2725 3394 
-Q 2993 3252 3142 2960 
-Q 3291 2668 3291 2218 
-L 3291 0 
-L 2755 0 
-L 2755 2182 
-Q 2755 2598 2540 2826 
-Q 2325 3055 1946 3055 
-Q 1682 3055 1474 2943 
-Q 1266 2832 1146 2618 
-Q 1027 2405 1027 2100 
-z
-" transform="scale(0.015625)"/>
       <path id="Inter-28" d="M 682 1964 
 Q 682 2823 906 3544 
 Q 1130 4266 1546 4873 
@@ -553,42 +498,18 @@ z
      <use xlink:href="#Inter-61" x="1145.596802"/>
      <use xlink:href="#Inter-6d" x="1201.988861"/>
      <use xlink:href="#Inter-20" x="1288.9207"/>
-     <use xlink:href="#Inter-6f" x="1317.0457"/>
-     <use xlink:href="#Inter-66" x="1376.704803"/>
-     <use xlink:href="#Inter-20" x="1412.784348"/>
-     <use xlink:href="#Inter-73" x="1440.909348"/>
-     <use xlink:href="#Inter-65" x="1493.182083"/>
-     <use xlink:href="#Inter-6c" x="1551.420731"/>
-     <use xlink:href="#Inter-65" x="1575.142319"/>
-     <use xlink:href="#Inter-63" x="1633.380966"/>
-     <use xlink:href="#Inter-74" x="1689.204834"/>
-     <use xlink:href="#Inter-65" x="1725.568481"/>
-     <use xlink:href="#Inter-64" x="1783.807129"/>
-     <use xlink:href="#Inter-20" x="1845.881012"/>
-     <use xlink:href="#Inter-72" x="1874.006012"/>
-     <use xlink:href="#Inter-69" x="1911.221924"/>
-     <use xlink:href="#Inter-76" x="1934.943512"/>
-     <use xlink:href="#Inter-65" x="1990.625336"/>
-     <use xlink:href="#Inter-72" x="2048.863983"/>
-     <use xlink:href="#Inter-20" x="2086.079895"/>
-     <use xlink:href="#Inter-72" x="2114.204895"/>
-     <use xlink:href="#Inter-65" x="2151.420807"/>
-     <use xlink:href="#Inter-61" x="2209.659454"/>
-     <use xlink:href="#Inter-63" x="2266.051514"/>
-     <use xlink:href="#Inter-68" x="2321.875381"/>
-     <use xlink:href="#Inter-20" x="2380.966309"/>
-     <use xlink:href="#Inter-28" x="2409.091309"/>
-     <use xlink:href="#Inter-6b" x="2445.312897"/>
-     <use xlink:href="#Inter-6d" x="2499.716309"/>
-     <use xlink:href="#Inter-29" x="2586.648148"/>
-     <use xlink:href="#Inter-3a" x="2622.869736"/>
+     <use xlink:href="#Inter-28" x="1317.0457"/>
+     <use xlink:href="#Inter-6b" x="1353.267288"/>
+     <use xlink:href="#Inter-6d" x="1407.6707"/>
+     <use xlink:href="#Inter-29" x="1494.602539"/>
+     <use xlink:href="#Inter-3a" x="1530.824127"/>
     </g>
    </g>
   </g>
   <g id="axes_2">
    <g id="text_2">
-    <!-- 690.83 -->
-    <g style="fill: #ffffff" transform="translate(347.316094 15.954688)scale(0.1 -0.1)">
+    <!-- 694.19 -->
+    <g style="fill: #ffffff" transform="translate(348.055156 15.954688)scale(0.1 -0.1)">
      <defs>
       <path id="Inter-36" d="M 2027 -64 
 Q 1741 -59 1454 45 
@@ -678,31 +599,25 @@ Q 2711 3923 2483 4070
 Q 2255 4218 1964 4218 
 z
 " transform="scale(0.015625)"/>
-      <path id="Inter-30" d="M 2000 -64 
-Q 1486 -64 1125 217 
-Q 764 498 573 1033 
-Q 382 1568 382 2327 
-Q 382 3082 574 3617 
-Q 766 4152 1128 4435 
-Q 1491 4718 2000 4718 
-Q 2509 4718 2871 4435 
-Q 3234 4152 3426 3617 
-Q 3618 3082 3618 2327 
-Q 3618 1568 3427 1033 
-Q 3236 498 2875 217 
-Q 2514 -64 2000 -64 
+      <path id="Inter-34" d="M 373 955 
+L 373 1418 
+L 2418 4655 
+L 2755 4655 
+L 2755 3936 
+L 2527 3936 
+L 982 1491 
+L 982 1455 
+L 3736 1455 
+L 3736 955 
+L 373 955 
 z
-M 2000 436 
-Q 2509 436 2791 927 
-Q 3073 1418 3073 2327 
-Q 3073 2932 2944 3357 
-Q 2816 3782 2576 4004 
-Q 2336 4227 2000 4227 
-Q 1496 4227 1211 3730 
-Q 927 3234 927 2327 
-Q 927 1723 1054 1300 
-Q 1182 877 1421 656 
-Q 1661 436 2000 436 
+M 2564 0 
+L 2564 1095 
+L 2564 1311 
+L 2564 4655 
+L 3100 4655 
+L 3100 0 
+L 2564 0 
 z
 " transform="scale(0.015625)"/>
       <path id="Inter-2e" d="M 882 -36 
@@ -717,162 +632,45 @@ Q 1180 75 1088 19
 Q 996 -36 882 -36 
 z
 " transform="scale(0.015625)"/>
-      <path id="Inter-38" d="M 1973 -64 
-Q 1505 -64 1147 103 
-Q 789 270 589 564 
-Q 389 859 391 1236 
-Q 389 1532 507 1783 
-Q 625 2034 830 2203 
-Q 1036 2373 1291 2418 
-L 1291 2445 
-Q 957 2532 759 2821 
-Q 561 3111 564 3482 
-Q 561 3836 743 4115 
-Q 925 4395 1244 4556 
-Q 1564 4718 1973 4718 
-Q 2377 4718 2695 4556 
-Q 3014 4395 3197 4115 
-Q 3380 3836 3382 3482 
-Q 3380 3111 3181 2821 
-Q 2982 2532 2655 2445 
-L 2655 2418 
-Q 2907 2373 3109 2203 
-Q 3311 2034 3431 1783 
-Q 3552 1532 3555 1236 
-Q 3552 859 3351 564 
-Q 3150 270 2794 103 
-Q 2439 -64 1973 -64 
-z
-M 1973 436 
-Q 2289 436 2518 538 
-Q 2748 641 2873 827 
-Q 2998 1014 3000 1264 
-Q 2998 1527 2864 1729 
-Q 2730 1932 2499 2048 
-Q 2268 2164 1973 2164 
-Q 1675 2164 1442 2048 
-Q 1209 1932 1076 1729 
-Q 943 1527 946 1264 
-Q 943 1014 1067 827 
-Q 1191 641 1423 538 
-Q 1655 436 1973 436 
-z
-M 1973 2645 
-Q 2223 2645 2417 2745 
-Q 2611 2845 2722 3025 
-Q 2834 3205 2836 3445 
-Q 2834 3682 2725 3858 
-Q 2616 4034 2423 4130 
-Q 2230 4227 1973 4227 
-Q 1711 4227 1516 4130 
-Q 1321 4034 1214 3858 
-Q 1107 3682 1109 3445 
-Q 1107 3205 1217 3025 
-Q 1327 2845 1522 2745 
-Q 1718 2645 1973 2645 
-z
-" transform="scale(0.015625)"/>
-      <path id="Inter-33" d="M 2055 -64 
-Q 1605 -64 1253 90 
-Q 902 245 696 521 
-Q 491 798 473 1164 
-L 1046 1164 
-Q 1064 939 1200 776 
-Q 1336 614 1556 525 
-Q 1777 436 2046 436 
-Q 2346 436 2577 540 
-Q 2809 645 2941 831 
-Q 3073 1018 3073 1264 
-Q 3073 1520 2945 1717 
-Q 2818 1914 2572 2025 
-Q 2327 2136 1973 2136 
-L 1600 2136 
-L 1600 2636 
-L 1973 2636 
-Q 2250 2636 2460 2736 
-Q 2671 2836 2790 3018 
-Q 2909 3200 2909 3445 
-Q 2909 3682 2804 3857 
-Q 2700 4032 2510 4129 
-Q 2321 4227 2064 4227 
-Q 1823 4227 1610 4139 
-Q 1398 4052 1264 3887 
-Q 1130 3723 1118 3491 
-L 573 3491 
-Q 586 3857 793 4133 
-Q 1000 4409 1335 4563 
-Q 1671 4718 2073 4718 
-Q 2505 4718 2814 4544 
-Q 3123 4370 3289 4086 
-Q 3455 3802 3455 3473 
-Q 3455 3080 3249 2802 
-Q 3043 2525 2691 2418 
-L 2691 2382 
-Q 3132 2309 3379 2008 
-Q 3627 1707 3627 1264 
-Q 3627 884 3421 583 
-Q 3216 282 2861 109 
-Q 2507 -64 2055 -64 
+      <path id="Inter-31" d="M 2118 4655 
+L 2118 0 
+L 1555 0 
+L 1555 4064 
+L 1527 4064 
+L 391 3309 
+L 391 3882 
+L 1555 4655 
+L 2118 4655 
 z
 " transform="scale(0.015625)"/>
      </defs>
      <use xlink:href="#Inter-36"/>
      <use xlink:href="#Inter-39" x="62.357971"/>
-     <use xlink:href="#Inter-30" x="124.715942"/>
-     <use xlink:href="#Inter-2e" x="187.215958"/>
-     <use xlink:href="#Inter-38" x="214.772781"/>
-     <use xlink:href="#Inter-33" x="276.420517"/>
+     <use xlink:href="#Inter-34" x="124.715942"/>
+     <use xlink:href="#Inter-2e" x="188.920502"/>
+     <use xlink:href="#Inter-31" x="216.477325"/>
+     <use xlink:href="#Inter-39" x="262.926193"/>
     </g>
    </g>
   </g>
   <g id="axes_3">
-   <g id="patch_2">
-    <path d="M 346.5 35.1 
-L 382.14 35.1 
-L 382.14 21.6 
-L 346.5 21.6 
-z
-" style="fill: #f0852d"/>
-   </g>
-   <g id="matplotlib.axis_1"/>
-   <g id="matplotlib.axis_2"/>
-   <g id="patch_3">
-    <path d="M 346.5 35.1 
-L 346.5 21.6 
-" style="fill: none"/>
-   </g>
-   <g id="patch_4">
-    <path d="M 382.14 35.1 
-L 382.14 21.6 
-" style="fill: none"/>
-   </g>
-   <g id="patch_5">
-    <path d="M 346.5 35.1 
-L 382.14 35.1 
-" style="fill: none"/>
-   </g>
-   <g id="patch_6">
-    <path d="M 346.5 21.6 
-L 382.14 21.6 
-" style="fill: none"/>
-   </g>
    <g id="text_3">
-    <!-- Enter number of downstream river reaches to be analyzed: -->
-    <g style="fill: #ffffff" transform="translate(9.54891 31.134375)scale(0.1 -0.1)">
+    <!-- Number of downstream: -->
+    <g style="fill: #ffffff" transform="translate(9.9 32.4)scale(0.1 -0.1)">
      <defs>
-      <path id="Inter-45" d="M 564 0 
-L 564 4655 
-L 3373 4655 
-L 3373 4155 
-L 1127 4155 
-L 1127 2582 
-L 3227 2582 
-L 3227 2082 
-L 1127 2082 
-L 1127 500 
-L 3409 500 
-L 3409 0 
+      <path id="Inter-4e" d="M 4255 4655 
+L 4255 0 
+L 3709 0 
+L 1173 3655 
+L 1127 3655 
+L 1127 0 
 L 564 0 
+L 564 4655 
+L 1109 4655 
+L 3655 991 
+L 3700 991 
+L 3700 4655 
+L 4255 4655 
 z
 " transform="scale(0.015625)"/>
       <path id="Inter-75" d="M 2691 1427 
@@ -933,99 +731,83 @@ Q 1318 2725 1204 2430
 Q 1091 2136 1091 1745 
 z
 " transform="scale(0.015625)"/>
-      <path id="Inter-79" d="M 836 -1309 
-Q 700 -1309 593 -1287 
-Q 486 -1266 446 -1245 
-L 582 -773 
-Q 777 -823 927 -809 
-Q 1077 -795 1194 -676 
-Q 1311 -557 1409 -291 
-L 1509 -18 
-L 218 3491 
-L 800 3491 
-L 1764 709 
-L 1800 709 
-L 2764 3491 
-L 3346 3491 
-L 1864 -509 
-Q 1764 -780 1616 -958 
-Q 1468 -1136 1274 -1222 
-Q 1080 -1309 836 -1309 
+      <path id="Inter-66" d="M 2046 3491 
+L 2046 3036 
+L 164 3036 
+L 164 3491 
+L 2046 3491 
 z
-" transform="scale(0.015625)"/>
-      <path id="Inter-7a" d="M 391 0 
-L 391 409 
-L 2373 2955 
-L 2373 2991 
-L 455 2991 
-L 455 3491 
-L 3064 3491 
-L 3064 3064 
-L 1136 536 
-L 1136 500 
-L 3127 500 
-L 3127 0 
-L 391 0 
+M 727 0 
+L 727 3973 
+Q 727 4273 868 4473 
+Q 1009 4673 1234 4773 
+Q 1459 4873 1709 4873 
+Q 1907 4873 2032 4841 
+Q 2157 4809 2218 4782 
+L 2064 4318 
+Q 2023 4332 1951 4352 
+Q 1880 4373 1764 4373 
+Q 1498 4373 1381 4239 
+Q 1264 4105 1264 3845 
+L 1264 0 
+L 727 0 
 z
 " transform="scale(0.015625)"/>
      </defs>
-     <use xlink:href="#Inter-45"/>
-     <use xlink:href="#Inter-6e" x="59.801147"/>
-     <use xlink:href="#Inter-74" x="118.323883"/>
-     <use xlink:href="#Inter-65" x="154.687531"/>
-     <use xlink:href="#Inter-72" x="212.926178"/>
-     <use xlink:href="#Inter-20" x="250.14209"/>
-     <use xlink:href="#Inter-6e" x="278.26709"/>
-     <use xlink:href="#Inter-75" x="336.789825"/>
-     <use xlink:href="#Inter-6d" x="394.886429"/>
-     <use xlink:href="#Inter-62" x="481.818268"/>
-     <use xlink:href="#Inter-65" x="543.892151"/>
-     <use xlink:href="#Inter-72" x="602.130798"/>
-     <use xlink:href="#Inter-20" x="639.34671"/>
-     <use xlink:href="#Inter-6f" x="667.47171"/>
-     <use xlink:href="#Inter-66" x="727.130814"/>
-     <use xlink:href="#Inter-20" x="763.210358"/>
-     <use xlink:href="#Inter-64" x="791.335358"/>
-     <use xlink:href="#Inter-6f" x="853.409241"/>
-     <use xlink:href="#Inter-77" x="913.068344"/>
-     <use xlink:href="#Inter-6e" x="994.318359"/>
-     <use xlink:href="#Inter-73" x="1052.841095"/>
-     <use xlink:href="#Inter-74" x="1105.113831"/>
-     <use xlink:href="#Inter-72" x="1141.477478"/>
-     <use xlink:href="#Inter-65" x="1178.69339"/>
-     <use xlink:href="#Inter-61" x="1236.932037"/>
-     <use xlink:href="#Inter-6d" x="1293.324097"/>
-     <use xlink:href="#Inter-20" x="1380.255936"/>
-     <use xlink:href="#Inter-72" x="1408.380936"/>
-     <use xlink:href="#Inter-69" x="1445.596848"/>
-     <use xlink:href="#Inter-76" x="1469.318436"/>
-     <use xlink:href="#Inter-65" x="1525.000259"/>
-     <use xlink:href="#Inter-72" x="1583.238907"/>
-     <use xlink:href="#Inter-20" x="1620.454819"/>
-     <use xlink:href="#Inter-72" x="1648.579819"/>
-     <use xlink:href="#Inter-65" x="1685.795731"/>
-     <use xlink:href="#Inter-61" x="1744.034378"/>
-     <use xlink:href="#Inter-63" x="1800.426437"/>
-     <use xlink:href="#Inter-68" x="1856.250305"/>
-     <use xlink:href="#Inter-65" x="1915.341232"/>
-     <use xlink:href="#Inter-73" x="1973.57988"/>
-     <use xlink:href="#Inter-20" x="2025.852615"/>
-     <use xlink:href="#Inter-74" x="2053.977615"/>
-     <use xlink:href="#Inter-6f" x="2090.341263"/>
-     <use xlink:href="#Inter-20" x="2150.000366"/>
-     <use xlink:href="#Inter-62" x="2178.125366"/>
-     <use xlink:href="#Inter-65" x="2240.199249"/>
-     <use xlink:href="#Inter-20" x="2298.437897"/>
-     <use xlink:href="#Inter-61" x="2326.562897"/>
-     <use xlink:href="#Inter-6e" x="2382.954956"/>
-     <use xlink:href="#Inter-61" x="2441.477692"/>
-     <use xlink:href="#Inter-6c" x="2497.869751"/>
-     <use xlink:href="#Inter-79" x="2521.591339"/>
-     <use xlink:href="#Inter-7a" x="2577.273163"/>
-     <use xlink:href="#Inter-65" x="2631.392487"/>
-     <use xlink:href="#Inter-64" x="2689.631134"/>
-     <use xlink:href="#Inter-3a" x="2751.705017"/>
+     <use xlink:href="#Inter-4e"/>
+     <use xlink:href="#Inter-75" x="75.284103"/>
+     <use xlink:href="#Inter-6d" x="133.380707"/>
+     <use xlink:href="#Inter-62" x="220.312546"/>
+     <use xlink:href="#Inter-65" x="282.386429"/>
+     <use xlink:href="#Inter-72" x="340.625076"/>
+     <use xlink:href="#Inter-20" x="377.840988"/>
+     <use xlink:href="#Inter-6f" x="405.965988"/>
+     <use xlink:href="#Inter-66" x="465.625092"/>
+     <use xlink:href="#Inter-20" x="501.704636"/>
+     <use xlink:href="#Inter-64" x="529.829636"/>
+     <use xlink:href="#Inter-6f" x="591.903519"/>
+     <use xlink:href="#Inter-77" x="651.562622"/>
+     <use xlink:href="#Inter-6e" x="732.812637"/>
+     <use xlink:href="#Inter-73" x="791.335373"/>
+     <use xlink:href="#Inter-74" x="843.608109"/>
+     <use xlink:href="#Inter-72" x="879.971756"/>
+     <use xlink:href="#Inter-65" x="917.187668"/>
+     <use xlink:href="#Inter-61" x="975.426315"/>
+     <use xlink:href="#Inter-6d" x="1031.818375"/>
+     <use xlink:href="#Inter-3a" x="1118.750214"/>
     </g>
+   </g>
+  </g>
+  <g id="axes_4">
+   <g id="patch_2">
+    <path d="M 346.5 35.1 
+L 382.14 35.1 
+L 382.14 21.6 
+L 346.5 21.6 
+z
+" style="fill: #f0852d"/>
+   </g>
+   <g id="matplotlib.axis_1"/>
+   <g id="matplotlib.axis_2"/>
+   <g id="patch_3">
+    <path d="M 346.5 35.1 
+L 346.5 21.6 
+" style="fill: none"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 382.14 35.1 
+L 382.14 21.6 
+" style="fill: none"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 346.5 35.1 
+L 382.14 35.1 
+" style="fill: none"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 346.5 21.6 
+L 382.14 21.6 
+" style="fill: none"/>
    </g>
    <g id="text_4">
     <!-- 5 -->
@@ -1068,41 +850,34 @@ z
     </g>
    </g>
   </g>
-  <g id="axes_4">
-   <g id="patch_7">
-    <path d="M 346.5 52.2 
-L 382.14 52.2 
-L 382.14 38.7 
-L 346.5 38.7 
-z
-" style="fill: #f0852d"/>
-   </g>
-   <g id="matplotlib.axis_3"/>
-   <g id="matplotlib.axis_4"/>
-   <g id="patch_8">
-    <path d="M 346.5 52.2 
-L 346.5 38.7 
-" style="fill: none"/>
-   </g>
-   <g id="patch_9">
-    <path d="M 382.14 52.2 
-L 382.14 38.7 
-" style="fill: none"/>
-   </g>
-   <g id="patch_10">
-    <path d="M 346.5 52.2 
-L 382.14 52.2 
-" style="fill: none"/>
-   </g>
-   <g id="patch_11">
-    <path d="M 346.5 38.7 
-L 382.14 38.7 
-" style="fill: none"/>
-   </g>
+  <g id="axes_5">
    <g id="text_5">
-    <!-- Enter distance separating river reaches to be analyzed (km): -->
-    <g style="fill: #ffffff" transform="translate(9.647 48.177344)scale(0.1 -0.1)">
+    <!-- Distance separating reaches (km): -->
+    <g style="fill: #ffffff" transform="translate(9.9 49.5)scale(0.1 -0.1)">
      <defs>
+      <path id="Inter-44" d="M 2000 0 
+L 564 0 
+L 564 4655 
+L 2064 4655 
+Q 2741 4655 3223 4376 
+Q 3705 4098 3961 3578 
+Q 4218 3059 4218 2336 
+Q 4218 1609 3959 1085 
+Q 3700 561 3204 280 
+Q 2709 0 2000 0 
+z
+M 1127 500 
+L 1964 500 
+Q 2541 500 2920 722 
+Q 3300 945 3486 1356 
+Q 3673 1768 3673 2336 
+Q 3673 2900 3489 3308 
+Q 3305 3716 2939 3935 
+Q 2573 4155 2027 4155 
+L 1127 4155 
+L 1127 500 
+z
+" transform="scale(0.015625)"/>
       <path id="Inter-70" d="M 491 -1309 
 L 491 3491 
 L 1009 3491 
@@ -1186,84 +961,100 @@ Q 1093 852 1319 694
 Q 1546 536 1882 536 
 z
 " transform="scale(0.015625)"/>
+      <path id="Inter-68" d="M 1027 2100 
+L 1027 0 
+L 491 0 
+L 491 4655 
+L 1027 4655 
+L 1027 2945 
+L 1073 2945 
+Q 1196 3216 1442 3376 
+Q 1689 3536 2100 3536 
+Q 2457 3536 2725 3394 
+Q 2993 3252 3142 2960 
+Q 3291 2668 3291 2218 
+L 3291 0 
+L 2755 0 
+L 2755 2182 
+Q 2755 2598 2540 2826 
+Q 2325 3055 1946 3055 
+Q 1682 3055 1474 2943 
+Q 1266 2832 1146 2618 
+Q 1027 2405 1027 2100 
+z
+" transform="scale(0.015625)"/>
      </defs>
-     <use xlink:href="#Inter-45"/>
-     <use xlink:href="#Inter-6e" x="59.801147"/>
-     <use xlink:href="#Inter-74" x="118.323883"/>
-     <use xlink:href="#Inter-65" x="154.687531"/>
-     <use xlink:href="#Inter-72" x="212.926178"/>
-     <use xlink:href="#Inter-20" x="250.14209"/>
-     <use xlink:href="#Inter-64" x="278.26709"/>
-     <use xlink:href="#Inter-69" x="340.340973"/>
-     <use xlink:href="#Inter-73" x="364.062561"/>
-     <use xlink:href="#Inter-74" x="416.335297"/>
-     <use xlink:href="#Inter-61" x="452.698944"/>
-     <use xlink:href="#Inter-6e" x="509.091003"/>
-     <use xlink:href="#Inter-63" x="567.613739"/>
-     <use xlink:href="#Inter-65" x="623.437607"/>
-     <use xlink:href="#Inter-20" x="681.676254"/>
-     <use xlink:href="#Inter-73" x="709.801254"/>
-     <use xlink:href="#Inter-65" x="762.07399"/>
-     <use xlink:href="#Inter-70" x="820.312637"/>
-     <use xlink:href="#Inter-61" x="881.250153"/>
-     <use xlink:href="#Inter-72" x="937.642212"/>
-     <use xlink:href="#Inter-61" x="974.858124"/>
-     <use xlink:href="#Inter-74" x="1031.250183"/>
-     <use xlink:href="#Inter-69" x="1067.613831"/>
-     <use xlink:href="#Inter-6e" x="1091.335419"/>
-     <use xlink:href="#Inter-67" x="1149.858154"/>
-     <use xlink:href="#Inter-20" x="1210.79567"/>
-     <use xlink:href="#Inter-72" x="1238.92067"/>
-     <use xlink:href="#Inter-69" x="1276.136581"/>
-     <use xlink:href="#Inter-76" x="1299.85817"/>
-     <use xlink:href="#Inter-65" x="1355.539993"/>
-     <use xlink:href="#Inter-72" x="1413.778641"/>
-     <use xlink:href="#Inter-20" x="1450.994553"/>
-     <use xlink:href="#Inter-72" x="1479.119553"/>
-     <use xlink:href="#Inter-65" x="1516.335464"/>
-     <use xlink:href="#Inter-61" x="1574.574112"/>
-     <use xlink:href="#Inter-63" x="1630.966171"/>
-     <use xlink:href="#Inter-68" x="1686.790039"/>
-     <use xlink:href="#Inter-65" x="1745.880966"/>
-     <use xlink:href="#Inter-73" x="1804.119614"/>
-     <use xlink:href="#Inter-20" x="1856.392349"/>
-     <use xlink:href="#Inter-74" x="1884.517349"/>
-     <use xlink:href="#Inter-6f" x="1920.880997"/>
-     <use xlink:href="#Inter-20" x="1980.5401"/>
-     <use xlink:href="#Inter-62" x="2008.6651"/>
-     <use xlink:href="#Inter-65" x="2070.738983"/>
-     <use xlink:href="#Inter-20" x="2128.977631"/>
-     <use xlink:href="#Inter-61" x="2157.102631"/>
-     <use xlink:href="#Inter-6e" x="2213.49469"/>
-     <use xlink:href="#Inter-61" x="2272.017426"/>
-     <use xlink:href="#Inter-6c" x="2328.409485"/>
-     <use xlink:href="#Inter-79" x="2352.131073"/>
-     <use xlink:href="#Inter-7a" x="2407.812897"/>
-     <use xlink:href="#Inter-65" x="2461.93222"/>
-     <use xlink:href="#Inter-64" x="2520.170868"/>
-     <use xlink:href="#Inter-20" x="2582.244751"/>
-     <use xlink:href="#Inter-28" x="2610.369751"/>
-     <use xlink:href="#Inter-6b" x="2646.591339"/>
-     <use xlink:href="#Inter-6d" x="2700.994751"/>
-     <use xlink:href="#Inter-29" x="2787.92659"/>
-     <use xlink:href="#Inter-3a" x="2824.148178"/>
+     <use xlink:href="#Inter-44"/>
+     <use xlink:href="#Inter-69" x="71.875015"/>
+     <use xlink:href="#Inter-73" x="95.596603"/>
+     <use xlink:href="#Inter-74" x="147.869339"/>
+     <use xlink:href="#Inter-61" x="184.232986"/>
+     <use xlink:href="#Inter-6e" x="240.625046"/>
+     <use xlink:href="#Inter-63" x="299.147781"/>
+     <use xlink:href="#Inter-65" x="354.971649"/>
+     <use xlink:href="#Inter-20" x="413.210297"/>
+     <use xlink:href="#Inter-73" x="441.335297"/>
+     <use xlink:href="#Inter-65" x="493.608032"/>
+     <use xlink:href="#Inter-70" x="551.84668"/>
+     <use xlink:href="#Inter-61" x="612.784195"/>
+     <use xlink:href="#Inter-72" x="669.176254"/>
+     <use xlink:href="#Inter-61" x="706.392166"/>
+     <use xlink:href="#Inter-74" x="762.784225"/>
+     <use xlink:href="#Inter-69" x="799.147873"/>
+     <use xlink:href="#Inter-6e" x="822.869461"/>
+     <use xlink:href="#Inter-67" x="881.392197"/>
+     <use xlink:href="#Inter-20" x="942.329712"/>
+     <use xlink:href="#Inter-72" x="970.454712"/>
+     <use xlink:href="#Inter-65" x="1007.670624"/>
+     <use xlink:href="#Inter-61" x="1065.909271"/>
+     <use xlink:href="#Inter-63" x="1122.301331"/>
+     <use xlink:href="#Inter-68" x="1178.125198"/>
+     <use xlink:href="#Inter-65" x="1237.216125"/>
+     <use xlink:href="#Inter-73" x="1295.454773"/>
+     <use xlink:href="#Inter-20" x="1347.727509"/>
+     <use xlink:href="#Inter-28" x="1375.852509"/>
+     <use xlink:href="#Inter-6b" x="1412.074097"/>
+     <use xlink:href="#Inter-6d" x="1466.477509"/>
+     <use xlink:href="#Inter-29" x="1553.409348"/>
+     <use xlink:href="#Inter-3a" x="1589.630936"/>
     </g>
+   </g>
+  </g>
+  <g id="axes_6">
+   <g id="patch_7">
+    <path d="M 346.5 52.2 
+L 382.14 52.2 
+L 382.14 38.7 
+L 346.5 38.7 
+z
+" style="fill: #f0852d"/>
+   </g>
+   <g id="matplotlib.axis_3"/>
+   <g id="matplotlib.axis_4"/>
+   <g id="patch_8">
+    <path d="M 346.5 52.2 
+L 346.5 38.7 
+" style="fill: none"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 382.14 52.2 
+L 382.14 38.7 
+" style="fill: none"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 346.5 52.2 
+L 382.14 52.2 
+" style="fill: none"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 346.5 38.7 
+L 382.14 38.7 
+" style="fill: none"/>
    </g>
    <g id="text_6">
     <!-- 117 -->
     <g style="fill: #ffffff" transform="translate(356.819219 48.064063)scale(0.1 -0.1)">
      <defs>
-      <path id="Inter-31" d="M 2118 4655 
-L 2118 0 
-L 1555 0 
-L 1555 4064 
-L 1527 4064 
-L 391 3309 
-L 391 3882 
-L 1555 4655 
-L 2118 4655 
-z
-" transform="scale(0.015625)"/>
       <path id="Inter-37" d="M 627 0 
 L 2709 4118 
 L 2709 4155 
@@ -1282,7 +1073,81 @@ z
     </g>
    </g>
   </g>
-  <g id="axes_5">
+  <g id="axes_7">
+   <g id="text_7">
+    <!-- Percentile for event detection: -->
+    <g style="fill: #ffffff" transform="translate(9.9 66.6)scale(0.1 -0.1)">
+     <defs>
+      <path id="Inter-50" d="M 564 0 
+L 564 4655 
+L 2136 4655 
+Q 2684 4655 3033 4458 
+Q 3382 4261 3550 3927 
+Q 3718 3593 3718 3182 
+Q 3718 2770 3551 2434 
+Q 3384 2098 3036 1899 
+Q 2689 1700 2146 1700 
+L 1018 1700 
+L 1018 2200 
+L 2127 2200 
+Q 2502 2200 2729 2329 
+Q 2957 2459 3060 2680 
+Q 3164 2902 3164 3182 
+Q 3164 3461 3060 3681 
+Q 2957 3902 2727 4028 
+Q 2498 4155 2118 4155 
+L 1127 4155 
+L 1127 0 
+L 564 0 
+z
+" transform="scale(0.015625)"/>
+      <path id="Inter-76" d="M 3346 3491 
+L 2055 0 
+L 1509 0 
+L 218 3491 
+L 800 3491 
+L 1764 709 
+L 1800 709 
+L 2764 3491 
+L 3346 3491 
+z
+" transform="scale(0.015625)"/>
+     </defs>
+     <use xlink:href="#Inter-50"/>
+     <use xlink:href="#Inter-65" x="63.494324"/>
+     <use xlink:href="#Inter-72" x="121.732971"/>
+     <use xlink:href="#Inter-63" x="158.948883"/>
+     <use xlink:href="#Inter-65" x="214.772751"/>
+     <use xlink:href="#Inter-6e" x="273.011398"/>
+     <use xlink:href="#Inter-74" x="331.534134"/>
+     <use xlink:href="#Inter-69" x="367.897781"/>
+     <use xlink:href="#Inter-6c" x="391.61937"/>
+     <use xlink:href="#Inter-65" x="415.340958"/>
+     <use xlink:href="#Inter-20" x="473.579605"/>
+     <use xlink:href="#Inter-66" x="501.704605"/>
+     <use xlink:href="#Inter-6f" x="537.784149"/>
+     <use xlink:href="#Inter-72" x="597.443253"/>
+     <use xlink:href="#Inter-20" x="634.659164"/>
+     <use xlink:href="#Inter-65" x="662.784164"/>
+     <use xlink:href="#Inter-76" x="721.022812"/>
+     <use xlink:href="#Inter-65" x="776.704636"/>
+     <use xlink:href="#Inter-6e" x="834.943283"/>
+     <use xlink:href="#Inter-74" x="893.466019"/>
+     <use xlink:href="#Inter-20" x="929.829666"/>
+     <use xlink:href="#Inter-64" x="957.954666"/>
+     <use xlink:href="#Inter-65" x="1020.028549"/>
+     <use xlink:href="#Inter-74" x="1078.267197"/>
+     <use xlink:href="#Inter-65" x="1114.630844"/>
+     <use xlink:href="#Inter-63" x="1172.869492"/>
+     <use xlink:href="#Inter-74" x="1228.693359"/>
+     <use xlink:href="#Inter-69" x="1265.057007"/>
+     <use xlink:href="#Inter-6f" x="1288.778595"/>
+     <use xlink:href="#Inter-6e" x="1348.437698"/>
+     <use xlink:href="#Inter-3a" x="1406.960434"/>
+    </g>
+   </g>
+  </g>
+  <g id="axes_8">
    <g id="patch_12">
     <path d="M 346.5 69.3 
 L 382.14 69.3 
@@ -1313,146 +1178,44 @@ L 382.14 69.3
 L 382.14 55.8 
 " style="fill: none"/>
    </g>
-   <g id="text_7">
-    <!-- Enter percentile for event detection in each river reach (%): -->
-    <g style="fill: #ffffff" transform="translate(9.531132 65.334375)scale(0.1 -0.1)">
-     <defs>
-      <path id="Inter-25" d="M 2855 873 
-L 2855 1118 
-Q 2855 1373 2960 1585 
-Q 3066 1798 3269 1926 
-Q 3473 2055 3764 2055 
-Q 4059 2055 4259 1926 
-Q 4459 1798 4561 1585 
-Q 4664 1373 4664 1118 
-L 4664 873 
-Q 4664 618 4560 405 
-Q 4457 193 4256 64 
-Q 4055 -64 3764 -64 
-Q 3468 -64 3266 64 
-Q 3064 193 2959 405 
-Q 2855 618 2855 873 
-z
-M 3318 1118 
-L 3318 873 
-Q 3318 661 3418 494 
-Q 3518 327 3764 327 
-Q 4002 327 4101 494 
-Q 4200 661 4200 873 
-L 4200 1118 
-Q 4200 1330 4104 1497 
-Q 4009 1664 3764 1664 
-Q 3525 1664 3421 1497 
-Q 3318 1330 3318 1118 
-z
-M 536 3536 
-L 536 3782 
-Q 536 4036 642 4248 
-Q 748 4461 951 4589 
-Q 1155 4718 1446 4718 
-Q 1741 4718 1941 4589 
-Q 2141 4461 2243 4248 
-Q 2346 4036 2346 3782 
-L 2346 3536 
-Q 2346 3282 2242 3069 
-Q 2139 2857 1937 2728 
-Q 1736 2600 1446 2600 
-Q 1150 2600 948 2728 
-Q 746 2857 641 3069 
-Q 536 3282 536 3536 
-z
-M 1000 3782 
-L 1000 3536 
-Q 1000 3325 1100 3158 
-Q 1200 2991 1446 2991 
-Q 1684 2991 1783 3158 
-Q 1882 3325 1882 3536 
-L 1882 3782 
-Q 1882 3993 1786 4160 
-Q 1691 4327 1446 4327 
-Q 1207 4327 1103 4160 
-Q 1000 3993 1000 3782 
-z
-M 709 0 
-L 3909 4655 
-L 4427 4655 
-L 1227 0 
-L 709 0 
-z
-" transform="scale(0.015625)"/>
-     </defs>
-     <use xlink:href="#Inter-45"/>
-     <use xlink:href="#Inter-6e" x="59.801147"/>
-     <use xlink:href="#Inter-74" x="118.323883"/>
-     <use xlink:href="#Inter-65" x="154.687531"/>
-     <use xlink:href="#Inter-72" x="212.926178"/>
-     <use xlink:href="#Inter-20" x="250.14209"/>
-     <use xlink:href="#Inter-70" x="278.26709"/>
-     <use xlink:href="#Inter-65" x="339.204605"/>
-     <use xlink:href="#Inter-72" x="397.443253"/>
-     <use xlink:href="#Inter-63" x="434.659164"/>
-     <use xlink:href="#Inter-65" x="490.483032"/>
-     <use xlink:href="#Inter-6e" x="548.72168"/>
-     <use xlink:href="#Inter-74" x="607.244415"/>
-     <use xlink:href="#Inter-69" x="643.608063"/>
-     <use xlink:href="#Inter-6c" x="667.329651"/>
-     <use xlink:href="#Inter-65" x="691.051239"/>
-     <use xlink:href="#Inter-20" x="749.289886"/>
-     <use xlink:href="#Inter-66" x="777.414886"/>
-     <use xlink:href="#Inter-6f" x="813.494431"/>
-     <use xlink:href="#Inter-72" x="873.153534"/>
-     <use xlink:href="#Inter-20" x="910.369446"/>
-     <use xlink:href="#Inter-65" x="938.494446"/>
-     <use xlink:href="#Inter-76" x="996.733093"/>
-     <use xlink:href="#Inter-65" x="1052.414917"/>
-     <use xlink:href="#Inter-6e" x="1110.653564"/>
-     <use xlink:href="#Inter-74" x="1169.1763"/>
-     <use xlink:href="#Inter-20" x="1205.539948"/>
-     <use xlink:href="#Inter-64" x="1233.664948"/>
-     <use xlink:href="#Inter-65" x="1295.738831"/>
-     <use xlink:href="#Inter-74" x="1353.977478"/>
-     <use xlink:href="#Inter-65" x="1390.341125"/>
-     <use xlink:href="#Inter-63" x="1448.579773"/>
-     <use xlink:href="#Inter-74" x="1504.403641"/>
-     <use xlink:href="#Inter-69" x="1540.767288"/>
-     <use xlink:href="#Inter-6f" x="1564.488876"/>
-     <use xlink:href="#Inter-6e" x="1624.14798"/>
-     <use xlink:href="#Inter-20" x="1682.670715"/>
-     <use xlink:href="#Inter-69" x="1710.795715"/>
-     <use xlink:href="#Inter-6e" x="1734.517303"/>
-     <use xlink:href="#Inter-20" x="1793.040039"/>
-     <use xlink:href="#Inter-65" x="1821.165039"/>
-     <use xlink:href="#Inter-61" x="1879.403687"/>
-     <use xlink:href="#Inter-63" x="1935.795746"/>
-     <use xlink:href="#Inter-68" x="1991.619614"/>
-     <use xlink:href="#Inter-20" x="2050.710541"/>
-     <use xlink:href="#Inter-72" x="2078.835541"/>
-     <use xlink:href="#Inter-69" x="2116.051453"/>
-     <use xlink:href="#Inter-76" x="2139.773041"/>
-     <use xlink:href="#Inter-65" x="2195.454865"/>
-     <use xlink:href="#Inter-72" x="2253.693512"/>
-     <use xlink:href="#Inter-20" x="2290.909424"/>
-     <use xlink:href="#Inter-72" x="2319.034424"/>
-     <use xlink:href="#Inter-65" x="2356.250336"/>
-     <use xlink:href="#Inter-61" x="2414.488983"/>
-     <use xlink:href="#Inter-63" x="2470.881042"/>
-     <use xlink:href="#Inter-68" x="2526.70491"/>
-     <use xlink:href="#Inter-20" x="2585.795837"/>
-     <use xlink:href="#Inter-28" x="2613.920837"/>
-     <use xlink:href="#Inter-25" x="2650.142426"/>
-     <use xlink:href="#Inter-29" x="2731.392441"/>
-     <use xlink:href="#Inter-3a" x="2767.614029"/>
-    </g>
-   </g>
    <g id="text_8">
     <!-- 90 -->
     <g style="fill: #ffffff" transform="translate(358.077031 65.164063)scale(0.1 -0.1)">
+     <defs>
+      <path id="Inter-30" d="M 2000 -64 
+Q 1486 -64 1125 217 
+Q 764 498 573 1033 
+Q 382 1568 382 2327 
+Q 382 3082 574 3617 
+Q 766 4152 1128 4435 
+Q 1491 4718 2000 4718 
+Q 2509 4718 2871 4435 
+Q 3234 4152 3426 3617 
+Q 3618 3082 3618 2327 
+Q 3618 1568 3427 1033 
+Q 3236 498 2875 217 
+Q 2514 -64 2000 -64 
+z
+M 2000 436 
+Q 2509 436 2791 927 
+Q 3073 1418 3073 2327 
+Q 3073 2932 2944 3357 
+Q 2816 3782 2576 4004 
+Q 2336 4227 2000 4227 
+Q 1496 4227 1211 3730 
+Q 927 3234 927 2327 
+Q 927 1723 1054 1300 
+Q 1182 877 1421 656 
+Q 1661 436 2000 436 
+z
+" transform="scale(0.015625)"/>
+     </defs>
      <use xlink:href="#Inter-39"/>
      <use xlink:href="#Inter-30" x="62.357971"/>
     </g>
    </g>
   </g>
-  <g id="axes_6">
+  <g id="axes_9">
    <g id="patch_17">
     <path d="M 9.9 175.5 
 L 132.66 175.5 
@@ -1538,31 +1301,6 @@ z
     </g>
     <!-- Discharge Timeseries -->
     <g style="fill: #ffffff" transform="translate(20.341719 147.579687)scale(0.1 -0.1)">
-     <defs>
-      <path id="Inter-44" d="M 2000 0 
-L 564 0 
-L 564 4655 
-L 2064 4655 
-Q 2741 4655 3223 4376 
-Q 3705 4098 3961 3578 
-Q 4218 3059 4218 2336 
-Q 4218 1609 3959 1085 
-Q 3700 561 3204 280 
-Q 2709 0 2000 0 
-z
-M 1127 500 
-L 1964 500 
-Q 2541 500 2920 722 
-Q 3300 945 3486 1356 
-Q 3673 1768 3673 2336 
-Q 3673 2900 3489 3308 
-Q 3305 3716 2939 3935 
-Q 2573 4155 2027 4155 
-L 1127 4155 
-L 1127 500 
-z
-" transform="scale(0.015625)"/>
-     </defs>
      <use xlink:href="#Inter-44"/>
      <use xlink:href="#Inter-69" x="71.875015"/>
      <use xlink:href="#Inter-73" x="95.596603"/>
@@ -1586,7 +1324,7 @@ z
     </g>
    </g>
   </g>
-  <g id="axes_7">
+  <g id="axes_10">
    <g id="patch_22">
     <path d="M 136.62 175.5 
 L 259.38 175.5 
@@ -1660,29 +1398,6 @@ L 1991 0
 L 1409 0 
 z
 " transform="scale(0.015625)"/>
-      <path id="Inter-50" d="M 564 0 
-L 564 4655 
-L 2136 4655 
-Q 2684 4655 3033 4458 
-Q 3382 4261 3550 3927 
-Q 3718 3593 3718 3182 
-Q 3718 2770 3551 2434 
-Q 3384 2098 3036 1899 
-Q 2689 1700 2146 1700 
-L 1018 1700 
-L 1018 2200 
-L 2127 2200 
-Q 2502 2200 2729 2329 
-Q 2957 2459 3060 2680 
-Q 3164 2902 3164 3182 
-Q 3164 3461 3060 3681 
-Q 2957 3902 2727 4028 
-Q 2498 4155 2118 4155 
-L 1127 4155 
-L 1127 0 
-L 564 0 
-z
-" transform="scale(0.015625)"/>
      </defs>
      <use xlink:href="#Inter-46"/>
      <use xlink:href="#Inter-6c" x="58.66478"/>
@@ -1708,7 +1423,7 @@ z
     </g>
    </g>
   </g>
-  <g id="axes_8">
+  <g id="axes_11">
    <g id="patch_27">
     <path d="M 263.34 175.5 
 L 386.1 175.5 
@@ -1749,6 +1464,23 @@ L 386.1 103.5
     </g>
     <!-- Event Duration -->
     <g style="fill: #ffffff" transform="translate(289.791094 147.500781)scale(0.1 -0.1)">
+     <defs>
+      <path id="Inter-45" d="M 564 0 
+L 564 4655 
+L 3373 4655 
+L 3373 4155 
+L 1127 4155 
+L 1127 2582 
+L 3227 2582 
+L 3227 2082 
+L 1127 2082 
+L 1127 500 
+L 3409 500 
+L 3409 0 
+L 564 0 
+z
+" transform="scale(0.015625)"/>
+     </defs>
      <use xlink:href="#Inter-45"/>
      <use xlink:href="#Inter-76" x="59.801147"/>
      <use xlink:href="#Inter-65" x="115.482971"/>
