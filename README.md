@@ -26,13 +26,13 @@ This code has been tested to function on Python 3.7, 3.8, and 3.9.  Other Python
 
 Please install the required packages in [requirements.txt](requirements.txt).
 
-Sample data can be found at [https://zenodo.org/record/3688691](https://zenodo.org/record/3688691) or [https://github.com/AlexLim-Pro/SWOF_Sample_Data.git](https://github.com/AlexLim-Pro/SWOF_Sample_Data.git).
+Sample data can be found at [https://zenodo.org/record/3688691](https://zenodo.org/record/3688691) or [https://github.com/AlexLim-Pro/RAFT_Sample_Data.git](https://github.com/AlexLim-Pro/RAFT_Sample_Data.git).
 
 Important assets are included in [assets](assets).
 
 When running RAFT, please click on one river reach to begin data analysis.
 
-#### [rrr_swo_flo.py](rrr_swo_flo.py)
+#### [rrr_raf_tal.py](rrr_raf_tal.py)
 
 Given a river data coordinate csv file, a river connectivity csv file, a river network shapefile, and a river model output netCDF file, this program creates an interactive model to better understand and communicate the propagation of water through space and time within rivers.
 
@@ -42,8 +42,4 @@ If you would like to use different files or file paths, you may specify thereof 
 
 **Example:**
 
-`python3 rrr_swo_flow.py ../San_Gaud_data/coords_San_Guad.csv ../San_Gaud_data/rapid_connect_San_Guad.csv ../San_Gaud_data/NHDFlowline_San_Guad/NHDFlowline_San_Guad.shp ../San_Gaud_data/Qout_San_Guad_exp00.nc`
-
-#### [rrr_msc_fnc.py](rrr_msc_fnc.py)
-
-Miscellaneous useful functions.
+`python3 rrr_raf_tal.py ../San_Gaud_data/coords_San_Guad.csv ../San_Gaud_data/rapid_connect_San_Guad.csv ../San_Gaud_data/NHDFlowline_San_Guad/NHDFlowline_San_Guad.shp ../San_Gaud_data/Qout_San_Guad_exp00.nc`
