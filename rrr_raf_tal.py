@@ -30,13 +30,18 @@ import numpy as np
 import progressbar
 # import shapefile as shp
 from descartes import PolygonPatch
-from shapely.geometry import Polygon, MultiPolygon, shape, MultiLineString, LineString
+from shapely.geometry import MultiLineString, LineString
 import fiona
 import statsmodels.api as sm
 from scipy.io import netcdf_file
 
 from rrr_msc_fnc import DistFncs
 
+from svgpathtools import svg2paths
+from svgpath2mpl import parse_path
+
+
+from rrr_msc_fnc import DistFncs
 
 ##### Styling the UI #####
 ### GUI Styling ###
@@ -78,6 +83,21 @@ swapping_colors = [
 ]
 cycol = itertools.cycle(swapping_colors)
 
+waypoint_path, attributes = svg2paths("./assets/svgs/waypoint.svg")
+waypoint = parse_path(attributes[0]["d"])
+waypoint.vertices -= waypoint.vertices.mean(axis=0)
+waypoint = waypoint.transformed(mpl.transforms.Affine2D().rotate_deg(180))
+waypoint = waypoint.transformed(mpl.transforms.Affine2D().scale(-1, 1))
+
+# waypoint_path, attributes = svg2paths("./assets/svgs/waypoint.svg")
+# waypoints = [
+#     parse_path(attributes[i]["d"]) for i in range(len(attributes) - 1)
+# ]
+# for i in range(len(waypoints)):
+#     waypoints[i].vertices -= waypoints[i].vertices.mean(axis=0)
+#     waypoints[i] = waypoints[i].transformed(mpl.transforms.Affine2D().rotate_deg(180))
+#     waypoints[i] = waypoints[i].transformed(mpl.transforms.Affine2D().scale(-1, 1))
+
 ### UI Styling ###
 progressbarWidgets = [
     "    [",
@@ -92,7 +112,6 @@ progressbarWidgets = [
 
 
 ##### Miscellaneous Globals #####
-coords_f_path = "../San_Gaud_data/coords_San_Guad.csv"
 connectivity_f_path = "../San_Gaud_data/rapid_connect_San_Guad.csv"
 sf_path = "../San_Gaud_data/NHDFlowline_San_Guad/NHDFlowline_San_Guad.shp"
 Qout_f_path = "../San_Gaud_data/Qout_San_Guad_exp00.nc"
@@ -141,26 +160,23 @@ default_linewidth = 1
 
 
 ##### Declaration of variables (given as command line arguments) #####
-# (1) - rrr_coords_file
-# (2) - rrr_connect_file
-# (3) - rrr_shp_file
-# (4) - rrr_Qout_file
+# (1) - rrr_connect_file
+# (2) - rrr_shp_file
+# (3) - rrr_Qout_file
 
 
 ##### Get command line arguments #####
 IS_arg = len(sys.argv)
-if IS_arg > 5:
-    print("Error: A maximum of 4 arguments can be used.")
+if IS_arg > 4:
+    print("Error: A maximum of 3 arguments can be used.")
     raise SystemExit(22)
 
 if IS_arg > 1:
-    coords_f_path = sys.argv[1]
+    connectivity_f_path = sys.argv[2]
     if IS_arg > 2:
-        connectivity_f_path = sys.argv[2]
+        sf_path = sys.argv[3]
         if IS_arg > 3:
-            sf_path = sys.argv[3]
-            if IS_arg > 4:
-                Qout_f_path = sys.argv[4]
+            Qout_f_path = sys.argv[4]
 
 Qout_f = netcdf_file(Qout_f_path, "r")
 
@@ -326,6 +342,7 @@ def on_pick(event):
     start_time = datetime.now()
     print("Showing downstream for", id)
     choose_downstream(id)
+    rivids, dists = get_rivids_along_downstream(num_reaches, reach_dist)
     ax.cla()
     ax.set_title("Please click on one river reach")
     ax.set_xlabel("Longitude")
@@ -334,12 +351,17 @@ def on_pick(event):
            if i in downstream_rivers_list
            else mpl.colors.to_rgba(default_point_color, hidden_alpha)
            for i in Qout_data_ids]
+
+    # m_p = [waypoint
+    #        if i in rivids
+    #        else "o"
+    #        for i in Qout_data_ids]
     ax.scatter(
         x_vals_array,
         y_vals_array,
         s=point_scaling,
         picker=5,
-        color=c_p
+        color=c_p,
     )
     c_l = [mpl.colors.to_rgba(b_c, 1)
            if i in downstream_rivers_list
@@ -347,6 +369,29 @@ def on_pick(event):
            for i in shp_comids]
     [ax.plot(xy[0], xy[1], color=c, linewidth=default_linewidth)
      for xy, c in zip(coord_arr, c_l)]
+
+    x_p = [xi for xi, idx in zip(x_vals_array, Qout_data_ids) if idx in rivids]
+    y_p = [yi for yi, idx in zip(y_vals_array, Qout_data_ids) if idx in rivids]
+    ax.scatter(
+        x_p,
+        y_p,
+        s=point_scaling * 1000,
+        picker=5,
+        color=mpl.colors.to_rgba("#FF0000", 1),
+        marker=waypoint,
+    )
+    # [[ax.scatter(
+    #     xi,
+    #     yi,
+    #     s=point_scaling * 1000,
+    #     picker=5,
+    #     color=mpl.colors.to_rgba("#FF0000", 1),
+    #     marker=w,
+    # )
+    #  if idx in rivids else 0
+    #  for xi, yi, idx in zip(x_vals_array, y_vals_array, Qout_data_ids)]
+    #     for w in waypoints
+    #  ]
     print("Took",
           (datetime.now() - start_time).total_seconds(),
           "seconds to select")
@@ -505,7 +550,6 @@ def show_event_duration(*args, **kwargs):
     if fig_name in plt.get_figlabels():
         return
     rivids, dists = get_rivids_along_downstream(num_reaches, reach_dist)
-    # rivers_list = downstream_rivers_list
     if not downstream_rivers_list:
         return
     i = 0
@@ -675,45 +719,6 @@ def fix_config_size(*args, **kwargs):
     :param kwargs: Unused parameter to allow function to work as a callback
     """
     fig_config.set_size_inches(5.5, 2.5)
-
-
-def clear_plots(*args, **kwargs):
-    """
-    Clears plots dynamically linked to the main interactive map
-
-    :param args: Unused parameter to allow function to work as a callback
-    :param kwargs: Unused parameter to allow function to work as a callback
-    """
-    global shown_rivers_list
-    for path in p:
-        if path in p:
-            try:
-                p[path].set_alpha(hidden_alpha)
-            except:
-                pass
-    for path in rivers:
-        if path in rivers:
-            j = 0
-            while True:
-                try:
-                    rivers[path][j].set_alpha(hidden_alpha)
-                except IndexError:
-                    break
-                except:
-                    continue
-                j += 1
-    for path in discharge_graph_rivers:
-        if path in discharge_graph_rivers:
-            j = 0
-            while True:
-                try:
-                    discharge_graph_rivers[path][j].set_alpha(0)
-                except IndexError:
-                    break
-                except:
-                    continue
-                j += 1
-    shown_rivers_list = list()
 
 
 def close_all(*args, **kwargs):
