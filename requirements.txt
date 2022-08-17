@@ -8,3 +8,4 @@ Shapely~=1.8.2
 svgpathtools~=1.5.1
 svgpath2mpl~=1.0.0
 Pillow~=8.3.2
+PyQt6~=6.3.1
