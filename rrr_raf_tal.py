@@ -436,6 +436,7 @@ def set_threshold_level(*args, **kwargs):
     if threshold_level == threshold_level_temp:
         update_idle()
         return
+    threshold_level = threshold_level_temp
     print("Setting the river threshold level to " +
           threshold_level + " percentile.")
     update_idle()
@@ -538,7 +539,8 @@ def show_propagation(*args, **kwargs):
         set_visible = False
         for r, d in zip(rivids[1:],
                         prop_rivid_prev_x[1:]):
-            if total_dist <= x <= d and not set_visible:
+            if total_dist <= x <= d and not set_visible\
+                    and 0 <= x <= dists[-1]:
                 prop_rivid_highlight[r].set_alpha(0.5)
                 fig_prop.canvas.draw_idle()
                 set_visible = True
