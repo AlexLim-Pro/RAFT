@@ -121,9 +121,9 @@ progressbarWidgets = [
 
 
 ##### Miscellaneous Globals #####
-connectivity_f_path = "../San_Gaud_data/rapid_connect_San_Guad.csv"
-sf_path = "../San_Gaud_data/NHDFlowline_San_Guad/NHDFlowline_San_Guad.shp"
-Qout_f_path = "../San_Gaud_data/Qout_San_Guad_exp00.nc"
+connectivity_f_path = "../San_Guad_data/rapid_connect_San_Guad.csv"
+sf_path = "../San_Guad_data/NHDFlowline_San_Guad/NHDFlowline_San_Guad.shp"
+Qout_f_path = "../San_Guad_data/Qout_San_Guad_exp00.nc"
 
 skip_rerender = False
 num_decimals = 2
