@@ -29,21 +29,13 @@ import numpy as np
 import progressbar
 import statsmodels.api as sm
 from PIL import Image
+from PyQt6.QtGui import QIcon
 from scipy.io import netcdf_file
 from shapely.geometry import LineString, MultiLineString
 from svgpath2mpl import parse_path
 from svgpathtools import svg2paths
-matplotlib.use("QtAgg")
 
-# from PyQt6 import QtCore, QtWidgets
-import sys
-from PyQt6.QtWidgets import (
-    QMainWindow, QApplication,
-    QLabel, QToolBar, QStatusBar
-)
-from PyQt6.QtGui import QAction, QIcon
-from PyQt6.QtCore import Qt
-from PyQt6 import QtCore
+matplotlib.use("QtAgg")
 import fiona
 
 
