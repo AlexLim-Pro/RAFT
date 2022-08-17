@@ -145,6 +145,8 @@ reach_dist_units = "km"
 threshold_level = "90"
 sleep_time = 0.01
 default_linewidth = 1
+prop_rivid_highlight = dict()
+prop_rivid_prev_x = list()
 im = Image.open("./assets/pngs/RAFT LOGO.png")
 
 
@@ -503,6 +505,7 @@ def show_propagation(*args, **kwargs):
     """
     global fig_prop
     global axs_prop
+    global prop_rivid_highlight
     update_idle()
     fig_name = "River Propagation Time"
     if fig_name in plt.get_figlabels():
@@ -516,16 +519,43 @@ def show_propagation(*args, **kwargs):
         maxval=len(rivids),
         widgets=progressbarWidgets).start()
     fig_prop, axs_prop = plt.subplots(label=fig_name)
-    axs_prop.format_coord = lambda x, y: \
-        str(round(y, num_decimals)) + " km at " + \
-        str(round(x * 3, num_decimals)) + " hours"
+
+    def prop_coord_format(x, y):
+        """
+        Format for propagation time
+
+        :param x: The time in 3 hours
+        :type x: float
+        :param y: The distance
+        :type y: float
+        :return: The formatted coordinates
+        :rtype: str
+        """
+        return_str = str(round(y, num_decimals)) + " km at " +\
+                     str(round(x * 3, num_decimals)) + " hours"
+        rivids, dists = get_rivids_along_downstream(num_reaches, reach_dist)
+        total_dist = 0
+        set_visible = False
+        for r, d in zip(rivids[1:],
+                        prop_rivid_prev_x[1:]):
+            if total_dist <= x <= d and not set_visible:
+                prop_rivid_highlight[r].set_alpha(0.5)
+                fig_prop.canvas.draw_idle()
+                set_visible = True
+            else:
+                try:
+                    prop_rivid_highlight[r].set_alpha(0)
+                except KeyError:
+                    break
+            total_dist = d
+        return return_str
+    axs_prop.format_coord = prop_coord_format
     fig_prop.canvas.manager.set_window_title(fig_name)
     plt.title(fig_name)
     plt.xlabel("Time (3 hours)")
     plt.ylabel("Distance (" + reach_dist_units + ")")
     color_swap = itertools.cycle(swapping_colors)
 
-    axs_prop.format_coord = discharge_coord_format
     fig_prop.canvas.manager.toolbar.actions()[0].setIcon(
         QIcon("./assets/svgs/home_large.svg"))
     fig_prop.canvas.manager.toolbar.actions()[1].setIcon(
@@ -544,9 +574,6 @@ def show_propagation(*args, **kwargs):
         fig_prop.canvas.manager.toolbar.actions()[6])
     for i in range(2):
         fig_prop.canvas.manager.toolbar.addAction("", "", lambda: 0)
-    axs_prop.format_coord = lambda x, y:\
-        str(round(y, num_decimals)) + " m³/s at " +\
-        str(round(x * 3, num_decimals)) + " hours"
 
     first_s = None
     last_dist = None
@@ -560,21 +587,22 @@ def show_propagation(*args, **kwargs):
             first_s = s
             last_dist = d
             prev_x = 0
+            prop_rivid_prev_x.append(prev_x)
             continue
         x = Qout_data[:, first_s]
         y = Qout_data[:, s]
         corr = sm.tsa.stattools.ccf(x, y,
                                     adjusted=True, fft=True)
         last_x = list(corr).index(max(corr))
-        plt.grid(alpha=grid_alpha)
+        axs_prop.grid(alpha=grid_alpha)
         color = mpl.colors.to_rgba(next(color_swap), 1)
-        plt.scatter(
+        axs_prop.scatter(
             prev_x + last_x, last_dist + d,
             s=point_scaling,
             alpha=1,
             color=color,
         )
-        plt.plot(
+        axs_prop.plot(
             [prev_x, prev_x + last_x],
             [last_dist, last_dist + d],
             linewidth=default_linewidth,
@@ -582,7 +610,14 @@ def show_propagation(*args, **kwargs):
             color=color,
             label=str(idx)
         )
+        prop_rivid_highlight[idx] = plt.fill_between(
+            [prev_x, prev_x + last_x],
+            [sum(dists), sum(dists)], [last_dist, last_dist + d],
+            alpha=0,
+            color=color,
+        )
         prev_x += last_x
+        prop_rivid_prev_x.append(prev_x)
         last_dist += d
         bar.update(i)
         sys.stdout.flush()
@@ -863,6 +898,8 @@ def reset(*args, **kwargs):
     global downstream_rivers_list
     global offsets
     global showing_downstream
+    global prop_rivid_highlight
+    global prop_rivid_prev_x
     update_idle()
     print("Resetting view")
     start_time = datetime.now()
@@ -881,6 +918,8 @@ def reset(*args, **kwargs):
     )
     downstream_rivers_list = list()
     offsets = list()
+    prop_rivid_highlight = dict()
+    prop_rivid_prev_x = list()
     showing_downstream = False
     for i in plt.get_fignums():
         if i != 1:
