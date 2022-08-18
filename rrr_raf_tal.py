@@ -146,7 +146,10 @@ threshold_level = "90"
 sleep_time = 0.01
 default_linewidth = 1
 prop_rivid_highlight = dict()
+prop_rivid_highlight_hours = dict()
+prop_rivid_highlight_km = dict()
 prop_rivid_prev_x = list()
+hidden_rivids = list()
 im = Image.open("./assets/pngs/RAFT LOGO.png")
 
 
@@ -195,6 +198,30 @@ def lat_long_coord_format(x, y):
         fig.canvas.manager.toolbar.actions()[-1])
     fig.canvas.manager.toolbar.addAction(lat + long, "",
                                          lat_long_coord_format)
+    return lat + long
+
+
+def lat_long_coord_format_small(x, y):
+    """
+    Format for latitude and longitude coordinates
+
+    :param x: The longitude
+    :type x: float
+    :param y: The latitude
+    :type y: float
+    :return: The formatted coordinates
+    :rtype: str
+    """
+    long = str(abs(round(x, num_decimals)))
+    lat = str(abs(round(y, num_decimals)))
+    if x >= 0:
+        long += "°E"
+    else:
+        long += "°W"
+    if y >= 0:
+        lat += "°N, "
+    else:
+        lat += "°S, "
     return lat + long
 
 
@@ -349,8 +376,10 @@ def on_pick(event):
         if np.all(np.isclose(offsets_temp, offsets, rtol=1e-3)):
             return
     if showing_downstream:
+        on_pick_showing_downstream(offsets_temp)
         return
-    offsets = offsets_temp
+    else:
+        offsets = offsets_temp
     i = 0
     for j in range(len(x_vals_array)):
         if x_vals_array[i] == offsets[0] and y_vals_array[i] == offsets[1]:
@@ -358,18 +387,37 @@ def on_pick(event):
         i += 1
     id = Qout_data_ids[i]
     start_time = datetime.now()
-    print("Showing downstream for", id)
-    showing_downstream = True
-    choose_downstream(id)
+    if not showing_downstream:
+        print("Showing downstream for", id)
+        choose_downstream(id)
     draw_map()
-    print("Took",
-          (datetime.now() - start_time).total_seconds(),
-          "seconds to select")
-    create_config_window()
+    if not showing_downstream:
+        print("Took",
+              (datetime.now() - start_time).total_seconds(),
+              "seconds to select")
+        create_config_window()
     redraw_canvases()
-    print("Took",
-          (datetime.now() - start_time).total_seconds(),
-          "seconds to select and draw")
+    if not showing_downstream:
+        print("Took",
+              (datetime.now() - start_time).total_seconds(),
+              "seconds to select and draw")
+        showing_downstream = True
+
+
+def on_pick_showing_downstream(local_offsets):
+    global hidden_rivids
+    rivids, dists = get_rivids_along_downstream(num_reaches, reach_dist)
+    i = 0
+    for j in range(len(x_vals_array)):
+        if x_vals_array[i] == local_offsets[0] and\
+                y_vals_array[i] == local_offsets[1]:
+            break
+        i += 1
+    id = Qout_data_ids[i]
+    if id not in rivids:
+        return
+    if id not in hidden_rivids:
+        hidden_rivids.append(id)
 
 
 def draw_map():
@@ -540,13 +588,20 @@ def show_propagation(*args, **kwargs):
         for r, d in zip(rivids[1:],
                         prop_rivid_prev_x[1:]):
             if total_dist <= x <= d and not set_visible\
-                    and 0 <= x <= dists[-1]:
+                    and min(prop_rivid_prev_x) <= x <= max(prop_rivid_prev_x):
                 prop_rivid_highlight[r].set_alpha(0.5)
+                if r in prop_rivid_highlight_hours:
+                    prop_rivid_highlight_hours[r].set_alpha(0.75)
+                    prop_rivid_highlight_km[r].set_alpha(0.75)
                 fig_prop.canvas.draw_idle()
                 set_visible = True
             else:
                 try:
                     prop_rivid_highlight[r].set_alpha(0)
+                    if r in prop_rivid_highlight_hours:
+                        prop_rivid_highlight_hours[r].set_alpha(0)
+                        prop_rivid_highlight_km[r].set_alpha(0)
+                    fig_prop.canvas.draw_idle()
                 except KeyError:
                     break
             total_dist = d
@@ -557,6 +612,8 @@ def show_propagation(*args, **kwargs):
     plt.xlabel("Time (3 hours)")
     plt.ylabel("Distance (" + reach_dist_units + ")")
     color_swap = itertools.cycle(swapping_colors)
+    fig_prop.canvas.manager.toolbar.setMinimumHeight(20)
+    fig_prop.canvas.manager.toolbar.setMaximumHeight(20)
 
     fig_prop.canvas.manager.toolbar.actions()[0].setIcon(
         QIcon("./assets/svgs/home_large.svg"))
@@ -576,6 +633,21 @@ def show_propagation(*args, **kwargs):
         fig_prop.canvas.manager.toolbar.actions()[6])
     for i in range(2):
         fig_prop.canvas.manager.toolbar.addAction("", "", lambda: 0)
+
+    color = mpl.colors.to_rgba(next(color_swap), 1)
+    axs_prop.scatter(
+        0, 0,
+        s=point_scaling,
+        alpha=1,
+        color=color,
+    )
+    axs_prop.plot(
+        [0, 0], [0, 0],
+        linewidth=default_linewidth,
+        alpha=1,
+        color=color,
+        label=str(rivids[0])
+    )
 
     first_s = None
     last_dist = None
@@ -599,14 +671,14 @@ def show_propagation(*args, **kwargs):
         axs_prop.grid(alpha=grid_alpha)
         color = mpl.colors.to_rgba(next(color_swap), 1)
         axs_prop.scatter(
-            prev_x + last_x, last_dist + d,
+            prev_x + last_x, d,
             s=point_scaling,
             alpha=1,
             color=color,
         )
         axs_prop.plot(
             [prev_x, prev_x + last_x],
-            [last_dist, last_dist + d],
+            [last_dist, d],
             linewidth=default_linewidth,
             alpha=1,
             color=color,
@@ -614,13 +686,36 @@ def show_propagation(*args, **kwargs):
         )
         prop_rivid_highlight[idx] = plt.fill_between(
             [prev_x, prev_x + last_x],
-            [sum(dists), sum(dists)], [last_dist, last_dist + d],
+            [d, d], [last_dist, d],
             alpha=0,
             color=color,
         )
+        if last_x != 0:
+            prop_rivid_highlight_hours[idx] = axs_prop.annotate(
+                str(round(last_x * 3, 0)) + " hours",
+                xy=(prev_x + last_x / 2, d),
+                xycoords="data",
+                xytext=(prev_x + last_x / 2, d + 5),
+                textcoords="data",
+                horizontalalignment="center",
+                verticalalignment="top",
+                alpha=0,
+                )
+
+            prop_rivid_highlight_km[idx] = axs_prop.annotate(
+                str(last_x) + " km",
+                xy=(prev_x, last_dist + (d - last_dist) / 2),
+                xycoords="data",
+                xytext=(prev_x, last_dist + (d - last_dist) / 2),
+                textcoords="data",
+                horizontalalignment="right",
+                verticalalignment="center",
+                rotation=90.0,
+                alpha=0,
+                )
         prev_x += last_x
         prop_rivid_prev_x.append(prev_x)
-        last_dist += d
+        last_dist = d
         bar.update(i)
         sys.stdout.flush()
     time.sleep(sleep_time)
@@ -663,6 +758,8 @@ def show_event_duration(*args, **kwargs):
     fig_peak_dur.canvas.manager.set_window_title(fig_name)
 
     axs_peak_dur.format_coord = discharge_coord_format
+    fig_peak_dur.canvas.manager.toolbar.setMinimumHeight(20)
+    fig_peak_dur.canvas.manager.toolbar.setMaximumHeight(20)
     fig_peak_dur.canvas.manager.toolbar.actions()[0].setIcon(
         QIcon("./assets/svgs/home_large.svg"))
     fig_peak_dur.canvas.manager.toolbar.actions()[1].setIcon(
@@ -747,6 +844,8 @@ def show_discharge_over_time(*args, **kwargs):
     fig_discharge.canvas.manager.set_window_title(discharge_title)
     for i in range(len(rivids)):
         axs_discharge[i].format_coord = discharge_coord_format
+    fig_discharge.canvas.manager.toolbar.setMinimumHeight(20)
+    fig_discharge.canvas.manager.toolbar.setMaximumHeight(20)
     fig_discharge.canvas.manager.toolbar.actions()[0].setIcon(
         QIcon("./assets/svgs/home_large.svg"))
     fig_discharge.canvas.manager.toolbar.actions()[1].setIcon(
@@ -901,7 +1000,10 @@ def reset(*args, **kwargs):
     global offsets
     global showing_downstream
     global prop_rivid_highlight
+    global prop_rivid_highlight_hours
+    global prop_rivid_highlight_km
     global prop_rivid_prev_x
+    global hidden_rivids
     update_idle()
     print("Resetting view")
     start_time = datetime.now()
@@ -921,7 +1023,10 @@ def reset(*args, **kwargs):
     downstream_rivers_list = list()
     offsets = list()
     prop_rivid_highlight = dict()
+    prop_rivid_highlight_hours = dict()
+    prop_rivid_highlight_km = dict()
     prop_rivid_prev_x = list()
+    hidden_rivids = list()
     showing_downstream = False
     for i in plt.get_fignums():
         if i != 1:
@@ -991,6 +1096,8 @@ def create_config_window():
     global b_propagation
     global ax_event_dur
     global b_event_dur
+    if "Control Room" in plt.get_figlabels():
+        return
     ##### Config Window #####
     temp = mpl.rcParams["toolbar"]
     mpl.rcParams["toolbar"] = "None"
@@ -1143,6 +1250,8 @@ b_event_dur.on_clicked(show_event_duration)
 ##### River Network Window Final Processing #####
 ### Toolbar Customization ###
 unwanted_buttons = ["Subplots", "Customize", "Save"]
+fig.canvas.manager.toolbar.setMinimumHeight(20)
+fig.canvas.manager.toolbar.setMaximumHeight(20)
 i = len(fig.canvas.manager.toolbar.actions())
 j = 0
 for x in fig.canvas.manager.toolbar.actions():
