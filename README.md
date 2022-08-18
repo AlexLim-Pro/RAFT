@@ -42,4 +42,4 @@ If you would like to use different files or file paths, you may specify thereof 
 
 **Example:**
 
-`python3 rrr_raf_tal.py ../San_Guad_data/coords_San_Guad.csv ../San_Guad_data/rapid_connect_San_Guad.csv ../San_Guad_data/NHDFlowline_San_Guad/NHDFlowline_San_Guad.shp ../San_Guad_data/Qout_San_Guad_exp00.nc`
+`python3 rrr_raf_tal.py ../San_Guad_data/rapid_connect_San_Guad.csv ../San_Guad_data/NHDFlowline_San_Guad/NHDFlowline_San_Guad.shp ../San_Guad_data/Qout_San_Guad_exp00.nc`
