@@ -22,7 +22,7 @@ Despite over 332 million cubic miles of water on Earth, over 97 percent is salin
 
 ### Runtime Instructions
 
-This code has been tested to function on Python 3.7, 3.8, and 3.9.  Other Python 3 versions should work as well; however, they are not recommended.
+This code has been tested to function on Python 3.7, 3.8, and 3.9.  Other Python 3 versions and even Python 2 versions should work as well; however, they are not recommended.
 
 Please install the required packages in [requirements.txt](requirements.txt).
 
