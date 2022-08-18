@@ -166,11 +166,11 @@ if IS_arg > 4:
     raise SystemExit(22)
 
 if IS_arg > 1:
-    connectivity_f_path = sys.argv[2]
+    connectivity_f_path = sys.argv[1]
     if IS_arg > 2:
-        sf_path = sys.argv[3]
+        sf_path = sys.argv[2]
         if IS_arg > 3:
-            Qout_f_path = sys.argv[4]
+            Qout_f_path = sys.argv[3]
 
 
 def lat_long_coord_format(x, y):
