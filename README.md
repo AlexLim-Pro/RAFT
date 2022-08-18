@@ -16,7 +16,7 @@ _PI: Cédric David_
 
 ### Abstract
 
-Despite over 332 million cubic miles of water on Earth, over 97 percent is saline.  Of that three percent of freshwater, 69 percent is locked up in ice and glaciers and 30 percent is underground.  Fresh surface water makes up the remaining one percent; however, it is this 1/150th of one percent of Earth’s water that makes up the large majority of our freshwater supply.  To better understand and observe Earth’s surface water, NASA has established and is developing satellites such as the future SWOT and NISAR missions.  This project–RAFT (Rivers and Flow Traversal )–seeks to use current and future data to better understand and communicate the propagation of water through space and time within rivers.
+Despite over 332 million cubic miles of water on Earth, over 97 percent is saline.  Of that three percent of freshwater, 69 percent is locked up in ice and glaciers and 30 percent is underground.  Fresh surface water makes up the remaining one percent; however, it is this 1/150th of one percent of Earth’s water that makes up the large majority of our freshwater supply.  To better understand and observe Earth’s surface water, NASA has established and is developing satellites such as the future SWOT and NISAR missions.  This project–RAFT (Rivers and Flow Traversal)–seeks to use current and future data to better understand and communicate the propagation of water through space and time within rivers.
 
 ---
 
@@ -42,4 +42,4 @@ If you would like to use different files or file paths, you may specify thereof 
 
 **Example:**
 
-`python3 rrr_raf_tal.py ../San_Gaud_data/coords_San_Guad.csv ../San_Gaud_data/rapid_connect_San_Guad.csv ../San_Gaud_data/NHDFlowline_San_Guad/NHDFlowline_San_Guad.shp ../San_Gaud_data/Qout_San_Guad_exp00.nc`
+`python3 rrr_raf_tal.py ../San_Guad_data/coords_San_Guad.csv ../San_Guad_data/rapid_connect_San_Guad.csv ../San_Guad_data/NHDFlowline_San_Guad/NHDFlowline_San_Guad.shp ../San_Guad_data/Qout_San_Guad_exp00.nc`
