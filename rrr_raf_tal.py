@@ -8,8 +8,28 @@
 # a river network shapefile, and a river model output netCDF file, this
 # program creates an interactive model to better understand and communicate the
 # propagation of water through space and time within rivers.
+# Abstract:
+# Despite over 332 million cubic miles of water on Earth, over 97 percent is
+# saline. Of that three percent of freshwater, 69 percent is locked up in ice
+# and glaciers and 30 percent is underground. Fresh surface water makes up the
+# remaining one percent; however, it is this 1/150th of one percent of Earth’s
+# water that makes up the large majority of our freshwater supply. To better
+# understand and observe Earth’s surface water, NASA has established and is
+# developing satellites such as the future SWOT and NISAR missions.
+# This project–RAFT (Rivers and Flow Traversal)–seeks to use current and future
+# data to better understand and communicate the propagation of water through
+# space and time within rivers.
 # Authors:
 # Alex Christopher Lim, Cedric H. David, 2022-2022
+# Visual Designers:
+# Isabel Li, Racquel Fygenson
+# Mentors:
+# Scott Davidoff, Santiago Lombeyda, Hillary Mushkin, and Maggie Hendrie
+# Acknowledgements:
+# This research was carried out at the Jet Propulsion Laboratory, California
+# Institute of Technology, and was sponsored by the JPL / Caltech / Art Center
+# Data to Discovery Program, and the National Aeronautics and Space
+# Administration (80NM0018D0004).
 
 
 ##### Import Python modules #####
