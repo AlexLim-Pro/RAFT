@@ -4,13 +4,35 @@
 
 ## To Better Understand and Communicate the Propagation of Water Through Space and Time Within Rivers
 
-_Computer Science Lead: Alex Christopher Lim_
+_**Computer Science Lead:**
+Alex Christopher Lim (University of California Santa Barbara in the College of Creative Studies)_
 
-_Design Leads: Isabel Li and Racquel Fygenson_
+_**Design Leads:**
+Isabel (zongzhan) Li (ArtCenter College of Design)
+and Racquel Fygenson (Northeastern University)_
 
-_Mentors: Scott Davidoff, Santiago Lombeyda, Hillary Mushkin, and Maggie Hendrie_
+_**Mentors:**
+Santiago Lombeyda (California Institute of Technology),
+Maggie Hendrie (ArtCenter College of Design),
+Hillary Mushkin (California Institute of Technology),
+and Scott Davidoff (Jet Propulsion Laboratory, California Institute of Technology)_
 
-_PI: Cédric David_
+_**PI:**
+Cédric David (Jet Propulsion Laboratory, California Institute of Technology)_
+
+_**Computer Science Collaborators:**
+Matt-Heun Hong (University of North Carolina at Chapel Hill)
+and Kazi Jawad (Carnegie Mellon University)_
+
+### Acknowledgements
+
+The research was carried out[, in part,] by the Jet
+Propulsion Laboratory, California Institute of Technology,
+under a contract with the National Aeronautics and Space
+Administration (80NM0018D0004).
+
+This work originated from the 2022 JPL/Caltech/ArtCenter
+Data to Discovery Program.
 
 ---
 
